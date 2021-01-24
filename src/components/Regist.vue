@@ -1,0 +1,124 @@
+<template>
+    <div>
+        <Header></Header>
+        <el-card class="box-card">
+            <div slot="header" class="clearfix card-title">
+                <h3>用户注册</h3>
+                <el-link href="/login" type="primary" style="float: right; padding: 3px 0">去登录</el-link>
+            </div>
+            <div class="text item">
+                <el-form ref="registForm" :rules="rules" :model="form" label-width="80px" class="card-box">
+                    <el-form-item label="用户名" prop="name">
+                        <el-input v-model="form.name" placeholder="请输入用户名"></el-input>
+                    </el-form-item>
+                    <el-form-item label="邮箱" prop="email" type="e">
+                        <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
+                    </el-form-item>
+                    <el-form-item label="密码" prop="password">
+                        <el-input v-model="form.password" placeholder="请输入密码" type="password"></el-input>
+                    </el-form-item>
+                    <el-form-item label="验证码" prop="code">
+                        <el-input v-model="form.code" placeholder="请输入邮箱验证码"></el-input>
+                    </el-form-item>
+                    <el-form-item>
+                        <el-button type="primary" @click="sendEmail()" style="float: left">发送验证码</el-button>
+                        <el-button type="primary" @click="regist('registForm')" style="float:right;">注册</el-button>
+                    </el-form-item>
+                </el-form>
+            </div>
+        </el-card>
+
+
+        <el-dialog
+                title="温馨提示"
+                :visible.sync="dialogVisible"
+                width="30%"
+                :before-close="handleClose">
+            <span>请检查字段</span>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+            </span>
+        </el-dialog>
+    </div>
+
+
+</template>
+
+
+<script>
+    import Header from "./Header";
+
+    export default {
+        name: "Regist",
+        components: {Header},
+        comments: {Header},
+        data() {
+            return {
+                form: {
+                    name: 'abilgail',
+                    email: 'hezijie_jack@163.com',
+                    password: 'abigial',
+                },
+                rules: {
+                    name: [
+                        {required: true, message: '请输入用户名', trigger: 'blur'},
+                        {min: 3, max: 10, message: '长度在 3 到 10 个字符', trigger: 'blur'}
+                    ],
+                    email: [
+                        {required: true, message: '请输入邮箱', trigger: 'blur'}
+                    ],
+                    password: [
+                        {required: true, message: '请输入密码', trigger: 'blur'}
+                    ],
+                    code: [
+                        {required: true, message: '请输入验证码', trigger: 'blur'}
+                    ]
+                },
+                dialogVisible: false
+            };
+        },
+        methods: {
+            sendEmail() {
+                var email = this.form.email;
+                if (email != null) {
+                    this.$axios.post('http://localhost:8081/sendEmail?email=' + email).then(res => {
+                        if (res.data.code == 200) {
+                            alert(res.data.msg);
+                            const jwt = res.headers['authorization']
+                            // 把数据共享出去
+                            _this.$store.commit("SET_TOKEN", jwt)
+                        }
+                    })
+                } else {
+                    this.dialogVisible = true;
+                    return false;
+                }
+            },
+            regist(formName) {
+                //表单绑定验证功能
+                this.$refs[formName].validate((valid) => {
+                    if (valid) {
+                        this.$axios.post('http://localhost:8081/regist',this.form ).then(res => {
+                            alert(res.data.msg);
+                        })
+                    } else {
+                        this.dialogVisible = true;
+                        return false;
+                    }
+                });
+            },
+        }
+    }
+</script>
+
+<style>
+
+
+.el-header, .el-footer {
+    background-color: #B3C0D1;
+    color: #333;
+    text-align: center;
+    line-height: 60px;
+}
+
+</style>
