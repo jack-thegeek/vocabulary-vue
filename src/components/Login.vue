@@ -12,7 +12,7 @@
                         <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
                     </el-form-item>
                     <el-form-item label="密码" prop="password" type="password">
-                        <el-input v-model="form.password" placeholder="请输入密码" type="password"></el-input>
+                        <el-input v-model="form.password" placeholder="请输入密码" type="password" show-password></el-input>
                     </el-form-item>
 
                     <el-form-item>
@@ -57,13 +57,16 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.$axios.post('/login', this.form).then(res => {
-                            _this.$message.success(res.data.msg);
-                            const jwt = res.headers['authorization']
-                            const userInfo = res.data.data;
-                            // 把数据存储到localStorage与sessionStorage
-                            _this.$store.commit("SET_TOKEN", jwt);
-                            _this.$store.commit("SET_USERINFO", userInfo);
-                            _this.$router.push("/info");
+                            if(res.data.code==200){
+                                _this.$message.success(res.data.msg);
+                                const jwt = res.headers['authorization']
+                                const userInfo = res.data.data;
+                                // 把数据存储到localStorage与sessionStorage
+                                _this.$store.commit("SET_TOKEN", jwt);
+                                _this.$store.commit("SET_USERINFO", userInfo);
+                                _this.$router.push("/info");
+                            }
+
                         })
                     } else {
                         _this.$message.success('请检查字段');
