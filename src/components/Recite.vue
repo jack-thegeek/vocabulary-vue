@@ -6,35 +6,35 @@
         </el-breadcrumb>
         <div></div>
         <el-card class="box-card">
-            <div slot="header" class="clearfix">
+            <div class="clearfix" slot="header">
                 <span>
                     <h2 style="text-align: center">{{word.english}}</h2>
                 </span>
-                <a style="float: right;margin-right: 10px" @click="collect(word.id,star)">
-                    <img :src="starOn" alt="" width="20" v-if="star==1">
-                    <img :src="starOff" alt="" width="20" v-else>
+                <a @click="collect(word.id,star)" style="float: right;margin-right: 10px">
+                    <img :src="starOn" alt="" v-if="star==1" width="20">
+                    <img :src="starOff" alt="" v-else width="20">
                 </a>
             </div>
             <el-collapse v-model="activeNames">
-                <el-collapse-item title="中文翻译" name="1">
+                <el-collapse-item name="1" title="中文翻译">
                     <div class="text item">{{word.chinese}}</div>
                 </el-collapse-item>
-                <el-collapse-item title="英英简短释义" name="2">
+                <el-collapse-item name="2" title="英英简短释义">
                     <div class="text item">{{word.en_short}}</div>
                 </el-collapse-item>
-                <el-collapse-item title="英英详细释义" name="3">
+                <el-collapse-item name="3" title="英英详细释义">
                     <div class="text item">{{word.en_long}}</div>
                 </el-collapse-item>
-                <el-collapse-item title="例句" name="4">
+                <el-collapse-item name="4" title="例句">
                     <div class="text item">{{word.example}}</div>
                 </el-collapse-item>
             </el-collapse>
         </el-card>
 
         <el-row class="btn">
-            <el-button type="danger" @click="unknow(word.id)">{{unknowText}}</el-button>
-            <el-button type="primary" @click="know(word.id)" v-if="showTag">认识</el-button>
-            <el-button type="success" @click="master(word.id)" v-if="showTag">已掌握</el-button>
+            <el-button @click="unknow(word.id)" type="danger">{{unknowText}}</el-button>
+            <el-button @click="know(word.id)" type="primary" v-if="showTag">认识</el-button>
+            <el-button @click="master(word.id)" type="success" v-if="showTag">已掌握</el-button>
         </el-row>
 
 

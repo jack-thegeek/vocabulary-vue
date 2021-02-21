@@ -4,17 +4,17 @@
         <el-row>
             <el-col :span="7" v-for="(info, index) in bookInfos">
                 <el-card :body-style="{ padding: '0px' }">
-                    <img src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png"
-                         class="image">
+                    <img class="image"
+                         src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
                     <div style="padding: 14px;">
                         <span>{{info.bookName}}</span>
                         <div class="bottom clearfix">
                             <div class="info">{{info.bookInfo}}</div>
                             <div class="author">作者：{{info.author}}</div>
-                            <el-button type="text" class="button" v-if="myBooks.indexOf(info.id)>-1">
+                            <el-button class="button" type="text" v-if="myBooks.indexOf(info.id)>-1">
                                 已拥有
                             </el-button>
-                            <el-button type="text" class="button" @click="addToLibrary(info.id)" v-else>
+                            <el-button @click="addToLibrary(info.id)" class="button" type="text" v-else>
                                 添加
                             </el-button>
                         </div>

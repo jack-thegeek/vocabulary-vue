@@ -1,7 +1,7 @@
 <template>
     <div class="transPageBox">
         <div>多接口翻译</div>
-        <el-row :gutter="30" type="flex" justify="center">
+        <el-row :gutter="30" justify="center" type="flex">
             <el-col :span="8">
                 <el-radio-group v-model="radio">
                     <el-radio label="en">中译英</el-radio>
@@ -9,26 +9,26 @@
                 </el-radio-group>
 
                 <p></p>
-                <el-form ref="searchForm" :model="searchForm" :rules="rules">
+                <el-form :model="searchForm" :rules="rules" ref="searchForm">
                     <el-form-item label="" prop="textarea">
                         <el-input
-                                type="textarea"
                                 :rows="4"
                                 placeholder="请输入内容"
+                                type="textarea"
                                 v-model="searchForm.textarea">
                         </el-input>
                     </el-form-item>
                     <el-form-item>
-                        <el-button type="primary" @click="search('searchForm')" style="float: right">翻译</el-button>
+                        <el-button @click="search('searchForm')" style="float: right" type="primary">翻译</el-button>
                     </el-form-item>
                 </el-form>
             </el-col>
             <el-col :span="10">
-                <el-collapse v-model="activeNames" v-if="show">
-                    <el-collapse-item title="百度翻译" name="1">
+                <el-collapse v-if="show" v-model="activeNames">
+                    <el-collapse-item name="1" title="百度翻译">
                         <div>{{baiduResult}}</div>
                     </el-collapse-item>
-                    <el-collapse-item title="有道翻译" name="2">
+                    <el-collapse-item name="2" title="有道翻译">
                         <div>
                             <p><span>网络释义</span></p>
                             <p><span>{{youdaoweb}}</span></p>
@@ -36,10 +36,10 @@
                             <p></p>
                         </div>
                     </el-collapse-item>
-                    <el-collapse-item title="彩云翻译" name="3">
+                    <el-collapse-item name="3" title="彩云翻译">
                         <div>{{caiyunResult}}</div>
                     </el-collapse-item>
-                    <el-collapse-item title="腾讯翻译" name="4">
+                    <el-collapse-item name="4" title="腾讯翻译">
                         <div>{{tencentResult}}</div>
                     </el-collapse-item>
 

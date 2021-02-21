@@ -1,66 +1,66 @@
 <template>
-    <div>
-        <div>
+    <div class="container">
+        <div class="btn-group">
             <el-row>
                 <el-button @click="getAll">全部</el-button>
                 <el-button @click="getRecited" type="primary">已背诵</el-button>
                 <el-button @click="getNotRecited" type="danger">未背诵</el-button>
                 <el-button @click="getMaster" type="success">已掌握</el-button>
-                <el-button type="warning" @click="getStar">星标单词</el-button>
+                <el-button @click="getStar" type="warning">星标单词</el-button>
             </el-row>
         </div>
         <el-table
                 :data="bookInfos"
                 border
-                stripe
-                style="width: 80%">
+                class=""
+                stripe>
             <el-table-column
                     align="center"
+                    label="序号"
                     type="index"
-                    width="50"
-                    label="序号">
+                    width="50">
             </el-table-column>
             <el-table-column
-                    prop="english"
-                    label="单词">
+                    label="单词"
+                    prop="english">
             </el-table-column>
             <el-table-column
-                    prop="chinese"
-                    label="翻译">
-            </el-table-column>
-            <el-table-column
-                    align="center"
-                    prop="first_date"
-                    label="背诵日期">
+                    label="翻译"
+                    prop="chinese">
             </el-table-column>
             <el-table-column
                     align="center"
-                    prop="state"
-                    label="状态"
-                    :filters="[{ text: '已掌握', value: '2' }, { text: '已背诵', value: '1' },{ text: '未背诵', value: '0' }]"
+                    label="背诵日期"
+                    prop="first_date">
+            </el-table-column>
+            <el-table-column
                     :filter-method="filterState"
-                    filter-placement="bottom-end">
+                    :filters="[{ text: '已掌握', value: '2' }, { text: '已背诵', value: '1' },{ text: '未背诵', value: '0' }]"
+                    align="center"
+                    filter-placement="bottom-end"
+                    label="状态"
+                    prop="state">
                 <template slot-scope="scope">
-                    <el-tag v-if="scope.row.state == 2" type="success" disable-transitions>
+                    <el-tag disable-transitions type="success" v-if="scope.row.state == 2">
                         已掌握
                     </el-tag>
-                    <el-tag v-else-if="scope.row.state == 1" type="primary" disable-transitions>
+                    <el-tag disable-transitions type="primary" v-else-if="scope.row.state == 1">
                         已背诵
                     </el-tag>
-                    <el-tag type="danger" disable-transitions v-else>
+                    <el-tag disable-transitions type="danger" v-else>
                         未背诵
                     </el-tag>
                 </template>
             </el-table-column>
             <el-table-column
                     align="center"
-                    prop="collection"
-                    label="收藏">
+                    label="收藏"
+                    prop="collection">
 
                 <template slot-scope="scope">
                     <div @click="star(scope.row,scope.$index)">
-                        <img :src="starOn" alt="" width="20" v-if="scope.row.collection==1">
-                        <img :src="starOff" alt="" width="20" v-else>
+                        <img :src="starOn" alt="" v-if="scope.row.collection==1" width="20">
+                        <img :src="starOff" alt="" v-else width="20">
                     </div>
                 </template>
 
@@ -68,18 +68,19 @@
             <el-table-column label="操作">
                 <template scope="scope">
                     <el-button size="small">编辑</el-button>
-                    <el-button type="danger" size="small">删除</el-button>
+                    <el-button size="small" type="danger">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
         <el-pagination
-                background
-                @size-change="handleSizeChange"
-                @current-change="handleCurrentChange"
-                layout="total, sizes, prev, pager, next, jumper"
+                :page-count="total"
                 :page-size="pageSize"
                 :page-sizes="[10,20,50,100,200]"
-                :page-count="total">
+                @current-change="handleCurrentChange"
+                @size-change="handleSizeChange"
+                background
+                class="pagination"
+                layout="total, sizes, prev, pager, next, jumper">
         </el-pagination>
     </div>
 </template>
@@ -139,12 +140,13 @@
                     _this.total = res.data.data.totalPage;
                 });
             },
-            //获取收藏
+            //获取收藏的单词
             getStar() {
                 const _this = this;
                 var bookId = this.$route.query.bookId;
-                this.$axios.get('/getStar?bookId=' + bookId).then(res => {
-                    _this.bookInfos = res.data.data;
+                this.$axios.get('/getRecordsByPage?bookId=' + bookId + "&collection=1").then(res => {
+                    _this.bookInfos = res.data.data.records;
+                    _this.total = res.data.data.totalPage;
                 });
             },
             handleSizeChange(val) {
@@ -191,5 +193,18 @@
 </script>
 
 <style scoped>
+    .container {
+        width: 80%;
+        margin: 0 auto;
+    }
 
+    .btn-group {
+        text-align: left;
+        padding-bottom: 20px;
+    }
+
+    .pagination {
+        padding-top: 20px;
+        text-align: center;
+    }
 </style>

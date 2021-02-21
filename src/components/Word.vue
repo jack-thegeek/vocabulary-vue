@@ -16,9 +16,7 @@
                 alert("succeed");
             });
         },
-        methods: {
-
-        }
+        methods: {}
     }
 </script>
 

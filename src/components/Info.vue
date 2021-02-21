@@ -7,16 +7,16 @@
         <p>已绑定邮箱：{{email}}</p>
         <el-divider></el-divider>
         <p>修改密码</p>
-        <el-form ref="form" :rules="rules" :model="form">
+        <el-form :model="form" :rules="rules" ref="form">
             <el-form-item label="原密码" prop="old">
-                <el-input v-model="form.old" placeholder="请输入原密码" show-password ></el-input>
+                <el-input placeholder="请输入原密码" show-password v-model="form.old"></el-input>
             </el-form-item>
             <el-form-item label="新密码" prop="new" type="password">
-                <el-input v-model="form.new" placeholder="请输入新密码" show-password></el-input>
+                <el-input placeholder="请输入新密码" show-password v-model="form.new"></el-input>
             </el-form-item>
 
             <el-form-item>
-                <el-button type="primary" @click="updatePwd('form')" style="float: right">提交</el-button>
+                <el-button @click="updatePwd('form')" style="float: right" type="primary">提交</el-button>
             </el-form-item>
         </el-form>
     </el-card>
@@ -52,12 +52,12 @@
                 this.username = info.name;
                 this.email = info.email;
             },
-            updatePwd(formName){
+            updatePwd(formName) {
                 const _this = this;
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
-                        this.$axios.post('/updatePwd?oldPassword='+this.form.old+'&newPassword='+this.form.new).then(res => {
-                            if(res.data.code==200){
+                        this.$axios.post('/updatePwd?oldPassword=' + this.form.old + '&newPassword=' + this.form.new).then(res => {
+                            if (res.data.code == 200) {
                                 _this.$message.success(res.data.msg);
 
                             }
