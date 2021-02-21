@@ -99,6 +99,7 @@
                 state: 3,
                 total: 0,//总页数
                 pageSize: 20,//默认每页显示20条
+                collection: 0,//是否收藏
             };
         },
         mounted: function () {
@@ -106,6 +107,7 @@
         },
         methods: {
             getAll() {
+                this.collection = 0;
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.$axios.get('/getRecordsByPage?bookId=' + bookId).then(res => {
@@ -114,6 +116,7 @@
                 });
             },
             getRecited() {
+                this.collection = 0;
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.state = 1;
@@ -123,6 +126,7 @@
                 });
             },
             getNotRecited() {
+                this.collection = 0;
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.state = 0;
@@ -132,6 +136,7 @@
                 });
             },
             getMaster() {
+                this.collection = 0;
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.state = 2;
@@ -142,6 +147,8 @@
             },
             //获取收藏的单词
             getStar() {
+                this.collection = 1;
+                this.state = 3;
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.$axios.get('/getRecordsByPage?bookId=' + bookId + "&collection=1").then(res => {
@@ -152,8 +159,9 @@
             handleSizeChange(val) {
                 var bookId = this.$route.query.bookId;
                 var state = this.state;
+                var collection = this.collection;
                 const _this = this;
-                this.$axios.get('/getRecordsByPage?bookId=' + bookId + '&pageSize=' + val + "&state=" + state).then(res => {
+                this.$axios.get('/getRecordsByPage?bookId=' + bookId + '&pageSize=' + val + "&state=" + state + "&collection=" + collection).then(res => {
                     _this.bookInfos = res.data.data.records;
                     _this.pageSize = val;
                     _this.total = res.data.data.totalPage;
@@ -163,8 +171,9 @@
                 var bookId = this.$route.query.bookId;
                 var pageSize = this.pageSize;
                 var state = this.state;
+                var collection = this.collection;
                 const _this = this;
-                this.$axios.get('/getRecordsByPage?bookId=' + bookId + '&pageSize=' + pageSize + '&pageNum=' + val + "&state=" + state)
+                this.$axios.get('/getRecordsByPage?bookId=' + bookId + '&pageSize=' + pageSize + '&pageNum=' + val + "&state=" + state + "&collection=" + collection)
                     .then(res => {
                         _this.bookInfos = res.data.data.records;
                         _this.total = res.data.data.totalPage;
@@ -181,8 +190,7 @@
                 const _this = this;
                 this.$axios.get('/star?recordId=' + recordId + "&star=" + star).then(res => {
                     if (star == 1) {
-                        _this.bookInfos[index].coll
-                        ection = 0;
+                        _this.bookInfos[index].collection = 0;
                     } else {
                         _this.bookInfos[index].collection = 1;
                     }
