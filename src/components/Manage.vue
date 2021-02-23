@@ -2,12 +2,24 @@
     <div class="container">
         <div class="btn-group">
             <el-row>
-                <el-button @click="getAll">全部</el-button>
-                <el-button @click="getRecited" type="primary">已背诵</el-button>
-                <el-button @click="getNotRecited" type="danger">未背诵</el-button>
-                <el-button @click="getMaster" type="success">已掌握</el-button>
-                <el-button @click="getStar" type="warning">星标单词</el-button>
+                <el-col :xs="24" :sm="24" :md="15" :lg="15" :xl="15">
+                    <el-button @click="getAll">全部</el-button>
+                    <el-button @click="getRecited" type="primary">已背诵</el-button>
+                    <el-button @click="getNotRecited" type="danger">未背诵</el-button>
+                    <el-button @click="getMaster" type="success">已掌握</el-button>
+                    <el-button @click="getStar" type="warning">星标单词</el-button>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="9" :lg="9" :xl="9">
+                    <el-input
+                            style="width:200px"
+                            placeholder="查找本单词书中的单词"
+                            v-model="searchText"
+                            clearable>
+                    </el-input>
+                    <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="searchWord"></el-button>
+                </el-col>
             </el-row>
+
         </div>
         <el-table
                 :data="bookInfos"
@@ -96,10 +108,11 @@
                 starOn: starOn,
                 starOff: starOff,
                 bookInfos: [],
-                state: 3,
+                state: 3,//单词状态
                 total: 0,//总页数
                 pageSize: 20,//默认每页显示20条
                 collection: 0,//是否收藏
+                searchText: ''
             };
         },
         mounted: function () {
@@ -194,6 +207,13 @@
                     } else {
                         _this.bookInfos[index].collection = 1;
                     }
+                });
+            },
+            searchWord() {
+                const _this = this;
+                this.$axios.get('/searchWord?searchText=' + _this.searchText).then(res => {
+                    _this.bookInfos = res.data.data.records;
+                    _this.total = res.data.data.totalPage;
                 });
             },
         }
