@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import {Message} from 'element-ui'
+import {Message,MessageBox,Loading} from 'element-ui'
 import Login from '../components/Login.vue'
 import Regist from '../components/Regist.vue'
 import Forget from "../components/Forget";
@@ -14,6 +14,12 @@ import MyBook from '../components/MyBook.vue'
 import Manage from '../components/Manage.vue'
 
 Vue.use(VueRouter)
+Vue.use(Loading.directive)
+Vue.prototype.$loading = Loading.service
+Vue.prototype.$msgbox = MessageBox
+Vue.prototype.$alert = MessageBox.alert
+Vue.prototype.$confirm = MessageBox.confirm
+Vue.prototype.$prompt = MessageBox.prompt
 Vue.prototype.$message = Message
 
 const routes = [

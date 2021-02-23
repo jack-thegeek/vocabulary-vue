@@ -64,8 +64,18 @@
             const _this = this;
             var bookId = this.$route.query.bookId;
             this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                _this.word = res.data.data;
-                _this.star = res.data.data.collection;
+                if (res.data.msg=='success'){
+                    _this.word = res.data.data;
+                    _this.star = res.data.data.collection;
+                }else {
+                    this.$alert('今日单词已背诵完毕', '提示', {
+                        confirmButtonText: '确定',
+                        type: 'info'
+                    }).then(() => {
+                        _this.$router.push('/myBook')
+                    });
+                }
+
             });
         },
         methods: {
@@ -77,7 +87,16 @@
 
                 });
                 this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                    _this.word = res.data.data;
+                    if (res.data.msg=='success'){
+                        _this.word = res.data.data;
+                    }else {
+                        _this.$alert('今日单词已背诵完毕', '提示', {
+                            confirmButtonText: '确定',
+                            type: 'info'
+                        }).then(() => {
+                            _this.$router.push('/myBook')
+                        });
+                    }
                 });
             },
             unknow(recordId) {
@@ -96,7 +115,16 @@
                     this.unknowText = "不认识";
                     this.showTag = true;
                     this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                        _this.word = res.data.data;
+                        if (res.data.msg=='success'){
+                            _this.word = res.data.data;
+                        }else {
+                            _this.$alert('今日单词已背诵完毕', '提示', {
+                                confirmButtonText: '确定',
+                                type: 'info'
+                            }).then(() => {
+                                _this.$router.push('/myBook')
+                            });
+                        }
                     });
                 }
             },
@@ -105,9 +133,19 @@
                 this.activeNames = "";
                 var bookId = this.$route.query.bookId;
                 this.$axios.get('/master?recordId=' + recordId).then(res => {
+
                 });
                 this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                    _this.word = res.data.data;
+                    if (res.data.msg=='success'){
+                        _this.word = res.data.data;
+                    }else {
+                        _this.$alert('今日单词已背诵完毕', '提示', {
+                            confirmButtonText: '确定',
+                            type: 'info'
+                        }).then(() => {
+                            _this.$router.push('/myBook')
+                        });
+                    }
                 });
             },
             collect(recordId, star) {
