@@ -8,6 +8,7 @@
                     <el-button @click="getNotRecited" type="danger">未背诵</el-button>
                     <el-button @click="getMaster" type="success">已掌握</el-button>
                     <el-button @click="getStar" type="warning">星标单词</el-button>
+                    <el-button @click="download" type="info">下载</el-button>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="9" :lg="9" :xl="9">
                     <el-input
@@ -216,6 +217,9 @@
                     _this.total = res.data.data.totalPage;
                 });
             },
+            download(){
+                alert('dd')
+            }
         }
     }
 </script>

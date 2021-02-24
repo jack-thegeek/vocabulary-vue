@@ -1,8 +1,8 @@
 <template>
     <div>
         <el-breadcrumb separator="/">
+            <el-breadcrumb-item>词库管理</el-breadcrumb-item>
             <el-breadcrumb-item>背单词</el-breadcrumb-item>
-            <el-breadcrumb-item>背诵</el-breadcrumb-item>
         </el-breadcrumb>
         <div></div>
         <el-card class="box-card">

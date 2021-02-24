@@ -10,9 +10,8 @@
             text-color="#fff"
             type="flex">
         <el-menu-item disabled index="1">欢迎回来，{{username}}</el-menu-item>
-        <el-menu-item index="/info">个人中心</el-menu-item>
-        <el-menu-item index="/myBook">背单词</el-menu-item>
-        <el-menu-item index="/manage">我的词库</el-menu-item>
+        <el-menu-item index="/info">个人信息</el-menu-item>
+        <el-menu-item index="/myBook">词库管理</el-menu-item>
         <el-menu-item index="/word">查单词</el-menu-item>
         <el-menu-item index="/translate">查翻译</el-menu-item>
         <el-menu-item index="/book">词库商城</el-menu-item>
