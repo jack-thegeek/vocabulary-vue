@@ -33,13 +33,19 @@
                     <el-upload
                             class="upload-demo"
                             drag
-                            action="/fileUpload"
-                            accept=".xlsx"
-                            multiple>
+                            :action="uploadUrl"
+                            :before-upload="handleBeforeUpload"
+                            :on-error="handleUploadError"
+                            :before-remove="beforeRemove"
+                            :on-exceed="handleExceed"
+                            multiple
+                            :limit="5"
+                            :file-list="fileList">
                         <i class="el-icon-upload"></i>
                         <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                        <div class="el-upload__tip" slot="tip">请先下载模板再上传</div>
+                        <div class="el-upload__tip" slot="tip">请先下载模板修改后再上传，最多同时上传5个文件</div>
                     </el-upload>
+
                 </el-card>
             </el-col>
         </el-row>
@@ -60,6 +66,8 @@
             return {
                 bookInfos: '',
                 myBooks: '',
+                uploadUrl: 'http://localhost:8081/fileUpload',
+                fileList: [],
             };
         },
         methods: {
@@ -77,10 +85,30 @@
             },
             downloadExample(){
                 window.open("http://localhost:8081/download?fileName=example.xlsx", '_blank')
-                // const _this = this;
-                // this.$axios.get('/downloadExample').then(res => {
-                //
-                // });
+            },
+            handleExceed(files, fileList) {
+                this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            },
+            beforeRemove(file, fileList) {
+                return this.$confirm(`确定移除 ${ file.name }？`);
+            },
+            handleUploadError(error, file) {
+                console.log("文件上传出错："+error)
+
+            },
+            handleBeforeUpload(file){
+                let formData = new FormData();
+                formData.append("multipartFiles", file);
+                this.$axios({
+                    method: 'post',
+                    url: 'http://localhost:8081/fileUpload',
+                    data: formData,
+                    headers: {'Content-Type': 'multipart/form-data' }
+                }).then((res) => {
+                    console.log("文件上传返回："+res)
+                }).catch(error => {
+                    console.log("文件上传异常:"+error)
+                })
             },
         }
     }
@@ -98,4 +126,8 @@
     .el-breadcrumb {
         margin-bottom: 20px;
     }
+    .el-upload-dragger{
+        width: 0;
+    }
+
 </style>
