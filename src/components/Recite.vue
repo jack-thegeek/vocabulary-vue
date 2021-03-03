@@ -104,11 +104,10 @@
                 var unknowText = this.unknowText;
                 if (unknowText != "下一个") {
                     this.$axios.get('/unknow?recordId=' + recordId).then(res => {
-
+                        this.activeNames = "1";
+                        this.showTag = false;
+                        this.unknowText = "下一个";
                     });
-                    this.activeNames = "1";
-                    this.showTag = false;
-                    this.unknowText = "下一个";
                 } else {
                     var bookId = this.$route.query.bookId;
                     this.activeNames = "";

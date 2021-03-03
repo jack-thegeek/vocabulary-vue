@@ -1,6 +1,6 @@
 <template>
     <div class="book-body">
-        词库商城
+        词库中心
         <el-row>
             <el-col :span="7" v-for="(info, index) in bookInfos">
                 <el-card :body-style="{ padding: '0px' }">
@@ -11,10 +11,10 @@
                         <div class="bottom clearfix">
                             <div class="info">{{info.bookInfo}}</div>
                             <div class="author">作者：{{info.author}}</div>
-                            <el-button class="button" type="text" v-if="myBooks.indexOf(info.id)>-1">
+                            <el-button class="button" type="text" disabled v-if="myBooks.indexOf(info.id)>-1">
                                 已拥有
                             </el-button>
-                            <el-button @click="addToLibrary(info.id)" class="button" type="text" v-else>
+                            <el-button @click="addToLibrary(info.id)" class="button" type="text">
                                 添加
                             </el-button>
                         </div>
@@ -51,8 +51,9 @@
         },
         methods: {
             addToLibrary(bookId) {
+                const _this = this;
                 this.$axios.get('/addToLibrary?bookId=' + bookId).then(res => {
-                    alert("succeed")
+                    _this.$alert("添加成功")
                 });
             },
         }

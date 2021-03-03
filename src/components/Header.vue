@@ -12,9 +12,9 @@
         <el-menu-item disabled index="1">欢迎回来，{{username}}</el-menu-item>
         <el-menu-item index="/info">个人信息</el-menu-item>
         <el-menu-item index="/myBook">词库管理</el-menu-item>
-        <el-menu-item index="/word">查单词</el-menu-item>
+        <el-menu-item index="/recite">背单词</el-menu-item>
         <el-menu-item index="/translate">查翻译</el-menu-item>
-        <el-menu-item index="/book">词库商城</el-menu-item>
+        <el-menu-item index="/book">词库中心</el-menu-item>
         <el-menu-item index="/admin" v-if="admin">管理系统</el-menu-item>
         <el-menu-item @click="logout()" index="/logout" v-if="show">退出登录</el-menu-item>
     </el-menu>

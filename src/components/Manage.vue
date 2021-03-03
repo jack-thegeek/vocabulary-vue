@@ -8,7 +8,7 @@
                     <el-button @click="getNotRecited" type="danger">未背诵</el-button>
                     <el-button @click="getMaster" type="success">已掌握</el-button>
                     <el-button @click="getStar" type="warning">星标单词</el-button>
-                    <el-button @click="download" type="info">下载</el-button>
+                    <el-button @click="download" type="button">导出全部</el-button>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="9" :lg="9" :xl="9">
                     <el-input
@@ -43,8 +43,8 @@
             </el-table-column>
             <el-table-column
                     align="center"
-                    label="背诵日期"
-                    prop="first_date">
+                    label="上次背诵日期"
+                    prop="lastDate">
             </el-table-column>
             <el-table-column
                     :filter-method="filterState"
@@ -217,8 +217,18 @@
                     _this.total = res.data.data.totalPage;
                 });
             },
-            download(){
-                alert('dd')
+            download() {
+                var bookId = this.$route.query.bookId;
+                this.$axios.post("/downloadRecord?bookId="+bookId).then(res=>{
+                    const blob = new Blob(res.data, {type: 'text/plain;charset=utf-8'});
+                    alert(res.data)
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = "vocabulary.xlsx";
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                });
             }
         }
     }

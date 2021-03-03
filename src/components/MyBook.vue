@@ -18,11 +18,15 @@
                         <div class="bottom clearfix">
                             <div class="info">{{info.bookInfo}}</div>
                             <div class="author">作者：{{info.author}}</div>
-                            <el-button @click="toRecite(info.id)" class="button" style="float: right" type="text">
-                                开始背诵
+
+                            <el-button @click="setDefaultBook(info.id)" class="button" style="float: right" type="text">
+                                设为当前背诵
                             </el-button>
                             <el-button @click="toManage(info.id)" class="button" style="float: left" type="text">
                                 管理
+                            </el-button>
+                            <el-button @click="delBook(info.id)" type="text">
+                                删除
                             </el-button>
                         </div>
                     </div>
@@ -71,6 +75,18 @@
             };
         },
         methods: {
+            setDefaultBook(bookId){
+                const _this = this;
+                this.$axios.get('/setDefaultBook?bookId='+bookId).then(res => {
+                    _this.$message.success(res.data.msg)
+                });
+            },
+            delBook(bookId) {
+                const _this = this;
+                this.$axios.get('/delBookInLibrary?bookId=' + bookId).then(res => {
+                    _this.$alert("删除成功")
+                });
+            },
             toRecite(bookId) {
                 this.$router.push({
                     path: "/recite",
@@ -84,7 +100,7 @@
                 });
             },
             downloadExample(){
-                window.open("http://localhost:8081/download?fileName=example.xlsx", '_blank')
+                window.open("http://localhost:8081/download?fileName=example.xlsx", '_blank');
             },
             handleExceed(files, fileList) {
                 this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
