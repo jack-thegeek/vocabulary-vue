@@ -1,8 +1,7 @@
 <template>
-    <div class="book-body">
-        词库中心
-        <el-row>
-            <el-col :span="7" v-for="(info, index) in bookInfos">
+    <div class="container book-body">
+        <el-row :gutter="25">
+            <el-col :span="5" v-for="(info, index) in bookInfos">
                 <el-card :body-style="{ padding: '0px' }">
                     <img class="image"
                          src="https://shadow.elemecdn.com/app/element/hamburger.9cf7b091-55e9-11e9-a976-7f4d0b07eef6.png">
@@ -14,7 +13,7 @@
                             <el-button class="button" type="text" disabled v-if="myBooks.indexOf(info.id)>-1">
                                 已拥有
                             </el-button>
-                            <el-button @click="addToLibrary(info.id)" class="button" type="text">
+                            <el-button @click="addToLibrary(info.id)" class="button" type="text" v-else>
                                 添加
                             </el-button>
                         </div>
@@ -53,7 +52,8 @@
             addToLibrary(bookId) {
                 const _this = this;
                 this.$axios.get('/addToLibrary?bookId=' + bookId).then(res => {
-                    _this.$alert("添加成功")
+                    _this.$alert("添加成功");
+                    location.reload();
                 });
             },
         }
@@ -62,12 +62,14 @@
 
 <style scoped>
     .book-body {
-        max-width: 800px;
+        padding-left: 5%;
+        padding-right: 5%;
     }
 
     .info {
         font-size: 13px;
         color: #999;
+        padding-bottom: 10px;
     }
 
     .bottom {

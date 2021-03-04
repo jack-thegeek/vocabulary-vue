@@ -1,6 +1,5 @@
 <template>
     <div class="transPageBox">
-        <div>多接口翻译</div>
         <el-row :gutter="30" justify="center" type="flex">
             <el-col :span="8">
                 <el-radio-group v-model="radio">
@@ -126,7 +125,7 @@
     }
 
     .transPageBox {
-
+        margin: 20px;
     }
 
     .el-row {
@@ -152,5 +151,8 @@
     .grid-content {
         border-radius: 4px;
         min-height: 36px;
+    }
+    .el-radio-group{
+        padding-bottom: 20px;
     }
 </style>
