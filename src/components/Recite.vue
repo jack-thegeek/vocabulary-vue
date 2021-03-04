@@ -4,7 +4,6 @@
             <el-breadcrumb-item>词库管理</el-breadcrumb-item>
             <el-breadcrumb-item>背单词</el-breadcrumb-item>
         </el-breadcrumb>
-        <div></div>
         <el-card class="box-card">
             <div class="clearfix" slot="header">
                 <span>
@@ -68,7 +67,7 @@
                     _this.word = res.data.data;
                     _this.star = res.data.data.collection;
                 }else {
-                    this.$alert('今日单词已背诵完毕', '提示', {
+                    this.$alert('今日新单词已学习完毕', '提示', {
                         confirmButtonText: '确定',
                         type: 'info'
                     }).then(() => {

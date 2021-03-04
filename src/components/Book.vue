@@ -52,8 +52,12 @@
             addToLibrary(bookId) {
                 const _this = this;
                 this.$axios.get('/addToLibrary?bookId=' + bookId).then(res => {
-                    _this.$alert("添加成功");
-                    location.reload();
+                    this.$alert('添加成功', '提示', {
+                        confirmButtonText: '确定',
+                        type: 'info'
+                    }).then(() => {
+                        location.reload();
+                    });
                 });
             },
         }

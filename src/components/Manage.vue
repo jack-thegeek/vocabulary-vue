@@ -1,5 +1,6 @@
 <template>
     <div class="container">
+
         <div class="btn-group">
             <el-row>
                 <el-col :xs="24" :sm="24" :md="15" :lg="15" :xl="15">
@@ -22,6 +23,19 @@
             </el-row>
 
         </div>
+
+        <div class="option">
+            <el-select v-model="value" placeholder="请选择每天背诵的单词数">
+                <el-option
+                        v-for="item in options"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value">
+                </el-option>
+            </el-select>
+            <el-button type="success" icon="el-icon-check" circle @click="setNum(value)"></el-button>
+        </div>
+
         <el-table
                 :data="bookInfos"
                 border
@@ -69,19 +83,17 @@
                     align="center"
                     label="收藏"
                     prop="collection">
-
                 <template slot-scope="scope">
-                    <div @click="star(scope.row,scope.$index)">
+                    <div @click="star(scope.row)">
                         <img :src="starOn" alt="" v-if="scope.row.collection==1" width="20">
                         <img :src="starOff" alt="" v-else width="20">
                     </div>
                 </template>
-
             </el-table-column>
             <el-table-column label="操作">
                 <template scope="scope">
                     <el-button size="small">编辑</el-button>
-                    <el-button size="small" type="danger">删除</el-button>
+                    <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -113,7 +125,24 @@
                 total: 0,//总页数
                 pageSize: 20,//默认每页显示20条
                 collection: 0,//是否收藏
-                searchText: ''
+                searchText: '',
+                value: '',
+                options: [{value: '5', label: '5'}, {value: '10', label: '10'}, {
+                    value: '15',
+                    label: '15'
+                }, {value: '20', label: '20'}, {value: '25', label: '25'}, {value: '30', label: '30'}, {
+                    value: '35',
+                    label: '35'
+                }, {value: '40', label: '40'}, {value: '45', label: '45'}, {value: '50', label: '50'}, {
+                    value: '55',
+                    label: '55'
+                }, {value: '60', label: '60'}, {value: '65', label: '65'}, {value: '70', label: '70'}, {
+                    value: '75',
+                    label: '75'
+                }, {value: '80', label: '80'}, {value: '85', label: '85'}, {value: '90', label: '90'}, {
+                    value: '95',
+                    label: '95'
+                }, {value: '100', label: '100'}]
             };
         },
         mounted: function () {
@@ -198,15 +227,16 @@
                 return row.state == value;
             },
             //收藏
-            star(row, index) {
+            star(row) {
                 var recordId = row.id;
-                var star = this.bookInfos[index].collection;
+                // var star = this.bookInfos[index].collection;
+                var star = row.collection;
                 const _this = this;
                 this.$axios.get('/star?recordId=' + recordId + "&star=" + star).then(res => {
                     if (star == 1) {
-                        _this.bookInfos[index].collection = 0;
+                        row.collection = 0;
                     } else {
-                        _this.bookInfos[index].collection = 1;
+                        row.collection = 1;
                     }
                 });
             },
@@ -219,7 +249,7 @@
             },
             download() {
                 var bookId = this.$route.query.bookId;
-                this.$axios.post("/downloadRecord?bookId="+bookId).then(res=>{
+                this.$axios.post("/downloadRecord?bookId=" + bookId).then(res => {
                     const blob = new Blob(res.data, {type: 'text/plain;charset=utf-8'});
                     alert(res.data)
                     const url = window.URL.createObjectURL(blob);
@@ -229,7 +259,29 @@
                     a.click();
                     window.URL.revokeObjectURL(url);
                 });
-            }
+            },
+            setNum(val) {
+                const _this = this;
+                var bookId = this.$route.query.bookId;
+                this.$axios.get('/setNum?bookId=' + bookId + '&num=' + val).then(res => {
+                    if (res.data.data=='success'){
+                        _this.$message.success('修改成功')
+                    }else {
+                        _this.$message.error('修改失败')
+                    }
+                });
+            },
+            del(val){
+                const _this = this;
+                var bookId = this.$route.query.bookId;
+                this.$axios.get('/delById?recordId=' + val).then(res => {
+                    if (res.data.code==200){
+                        _this.$message.success('删除成功')
+                    }else {
+                        _this.$message.error('删除失败')
+                    }
+                });
+            },
         }
     }
 </script>
@@ -248,5 +300,9 @@
     .pagination {
         padding-top: 20px;
         text-align: center;
+    }
+
+    .option {
+        margin-bottom: 20px;
     }
 </style>

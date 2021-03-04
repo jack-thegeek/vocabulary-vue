@@ -1,7 +1,6 @@
 <template>
     <el-menu
             :default-active="this.$route.path"
-            @select="handleSelect"
             active-text-color="#ffd04b"
             background-color="#545c64"
             class="el-menu-demo"
@@ -35,9 +34,6 @@
             this.initData();//需要触发的函数
         },
         methods: {
-            handleSelect(key, keyPath) {
-                console.log(key, keyPath);
-            },
             initData() {
                 var userInfo = this.$store.getters.getUser;
                 if (userInfo != null) {

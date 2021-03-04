@@ -59,7 +59,6 @@
                         this.$axios.post('/updatePwd?oldPassword=' + this.form.old + '&newPassword=' + this.form.new).then(res => {
                             if (res.data.code == 200) {
                                 _this.$message.success(res.data.msg);
-
                             }
                         })
                     } else {
