@@ -78,7 +78,7 @@
     }
 </script>
 
-<style>
+<style scoped>
 
     .item {
         margin-bottom: 18px;

@@ -4,6 +4,9 @@
             <el-breadcrumb-item>词库管理</el-breadcrumb-item>
             <el-breadcrumb-item>背单词</el-breadcrumb-item>
         </el-breadcrumb>
+        <div class="info">
+            新学习：{{newNum}}/{{planNum}}  待复习：{{oldNum}}
+        </div>
         <el-card class="box-card">
             <div class="clearfix" slot="header">
                 <span>
@@ -30,10 +33,19 @@
             </el-collapse>
         </el-card>
 
-        <el-row class="btn">
-            <el-button @click="unknow(word.id)" type="danger">{{unknowText}}</el-button>
-            <el-button @click="know(word.id)" type="primary" v-if="showTag">认识</el-button>
-            <el-button @click="master(word.id)" type="success" v-if="showTag">已掌握</el-button>
+        <el-row class="btn" v-if="group1">
+            <el-button @click="unknow(word.id)" type="danger">不认识</el-button>
+            <el-button @click="know(word.id)" type="primary">认识</el-button>
+            <el-button @click="master(word.id)" type="success">已掌握</el-button>
+        </el-row>
+
+        <el-row class="btn" v-if="group2">
+            <el-button @click="correct(word.id)" type="success">正确</el-button>
+            <el-button @click="incorrect(word.id)" type="danger">不正确</el-button>
+        </el-row>
+
+        <el-row class="btn" v-if="group3">
+            <el-button @click="getNewWord" type="danger">下一个</el-button>
         </el-row>
 
 
@@ -53,41 +65,35 @@
                 word: '',
                 star: 0,
                 activeNames: '',
-                showTag: true,
-                unknowText: '不认识',
+                group1: true,
+                group2: false,
+                group3: false,
                 starOn: starOn,
                 starOff: starOff,
+                newNum: '',
+                oldNum: '',
+                planNum: '',
+
             };
         },
         mounted: function () {
-            const _this = this;
-            var bookId = this.$route.query.bookId;
-            this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                if (res.data.msg=='success'){
-                    _this.word = res.data.data;
-                    _this.star = res.data.data.collection;
-                }else {
-                    this.$alert('今日新单词已学习完毕', '提示', {
-                        confirmButtonText: '确定',
-                        type: 'info'
-                    }).then(() => {
-                        _this.$router.push('/myBook')
-                    });
-                }
-
-            });
+            this.getNewWord();
         },
         methods: {
-            know(recordId) {
+            getNewWord(){
                 this.activeNames = "";
+                this.group1 = true;
+                this.group2 = false;
+                this.group3 = false;
                 const _this = this;
-                var bookId = this.$route.query.bookId;
-                this.$axios.get('/know?recordId=' + recordId).then(res => {
 
-                });
-                this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
+                this.$axios.get('/getNewWord').then(res => {
                     if (res.data.msg=='success'){
-                        _this.word = res.data.data;
+                        _this.word = res.data.data.record;
+                        _this.star = res.data.data.record.collection;
+                        _this.newNum = res.data.data.newNum;
+                        _this.oldNum = res.data.data.oldNum;
+                        _this.planNum = res.data.data.planNum;
                     }else {
                         _this.$alert('今日单词已背诵完毕', '提示', {
                             confirmButtonText: '确定',
@@ -98,52 +104,22 @@
                     }
                 });
             },
+
+            know(recordId) {
+                this.group1 = false;
+                this.group2 = true;
+                this.activeNames = "1";
+            },
             unknow(recordId) {
-                const _this = this;
-                var unknowText = this.unknowText;
-                if (unknowText != "下一个") {
-                    this.$axios.get('/unknow?recordId=' + recordId).then(res => {
-                        this.activeNames = "1";
-                        this.showTag = false;
-                        this.unknowText = "下一个";
-                    });
-                } else {
-                    var bookId = this.$route.query.bookId;
-                    this.activeNames = "";
-                    this.unknowText = "不认识";
-                    this.showTag = true;
-                    this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                        if (res.data.msg=='success'){
-                            _this.word = res.data.data;
-                        }else {
-                            _this.$alert('今日单词已背诵完毕', '提示', {
-                                confirmButtonText: '确定',
-                                type: 'info'
-                            }).then(() => {
-                                _this.$router.push('/myBook')
-                            });
-                        }
-                    });
-                }
+                this.group1 = false;
+                this.group3 = true;
+                this.activeNames = "1";
             },
             master(recordId) {
                 const _this = this;
                 this.activeNames = "";
-                var bookId = this.$route.query.bookId;
                 this.$axios.get('/master?recordId=' + recordId).then(res => {
-
-                });
-                this.$axios.get('/getNewWord?bookId=' + bookId).then(res => {
-                    if (res.data.msg=='success'){
-                        _this.word = res.data.data;
-                    }else {
-                        _this.$alert('今日单词已背诵完毕', '提示', {
-                            confirmButtonText: '确定',
-                            type: 'info'
-                        }).then(() => {
-                            _this.$router.push('/myBook')
-                        });
-                    }
+                    _this.getNewWord();
                 });
             },
             collect(recordId, star) {
@@ -155,7 +131,19 @@
                         _this.star = 1;
                     }
                 });
-            }
+            },
+            correct(recordId){
+                const _this = this;
+                this.$axios.get('/know?recordId=' + recordId).then(res => {
+                    _this.getNewWord();
+                });
+            },
+            incorrect(recordId){
+                const _this = this;
+                this.$axios.get('/unknow?recordId=' + recordId).then(res => {
+                    _this.getNewWord();
+                });
+            },
         }
     }
 </script>
@@ -173,6 +161,17 @@
         text-align: center;
         margin: 0 auto;
         margin-top: 30px;
+    }
+    .box-card {
+        margin: 0 auto;
+        margin-top: 50px;
+        width: 480px;
+    }
+    .info{
+        text-align: center  ;
+        margin: 0 auto;
+        margin-top: 20px;
+        width: 480px;
     }
 
 </style>

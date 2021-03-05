@@ -274,12 +274,23 @@
             del(val){
                 const _this = this;
                 var bookId = this.$route.query.bookId;
-                this.$axios.get('/delById?recordId=' + val).then(res => {
-                    if (res.data.code==200){
-                        _this.$message.success('删除成功')
-                    }else {
-                        _this.$message.error('删除失败')
-                    }
+                this.$confirm('此操作将永久删除此条背诵记录, 是否继续?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    _this.$axios.get('/delById?recordId=' + val).then(res => {
+                        if (res.data.code==200){
+                            _this.$message.success('删除成功')
+                        }else {
+                            _this.$message.error('删除失败')
+                        }
+                    });
+                }).catch(() => {
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
                 });
             },
         }
