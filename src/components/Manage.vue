@@ -9,6 +9,7 @@
                     <el-button @click="getNotRecited" type="danger">未背诵</el-button>
                     <el-button @click="getMaster" type="success">已掌握</el-button>
                     <el-button @click="getStar" type="warning">星标单词</el-button>
+                    <el-button @click="getNote" type="info">我的笔记</el-button>
                     <el-button @click="download" type="button">导出全部</el-button>
                 </el-col>
                 <el-col :xs="24" :sm="24" :md="9" :lg="9" :xl="9">
@@ -21,11 +22,11 @@
                     <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="searchWord"></el-button>
                 </el-col>
             </el-row>
-
         </div>
 
         <div class="option">
-            <el-select v-model="value" placeholder="请选择每天背诵的单词数">
+            每天学习的新单词量
+            <el-select v-model="value">
                 <el-option
                         v-for="item in options"
                         :key="item.value"
@@ -33,8 +34,55 @@
                         :value="item.value">
                 </el-option>
             </el-select>
-            <el-button type="success" icon="el-icon-check" circle @click="setNum(value)"></el-button>
+            <el-button class="check" type="success" icon="el-icon-check" circle @click="setNum(value)"></el-button>
+
+            <el-switch
+                    v-model="switcher"
+                    active-text="显示翻译"
+                    inactive-text="隐藏翻译">
+            </el-switch>
+
+            <span class="learningInfo">总学习情况：{{oldWord}}/{{totalWord}}</span>
+
         </div>
+
+<!--        编辑框-->
+        <el-dialog title="编辑" :visible.sync="dialogFormVisible">
+            <el-form :model="form">
+                <el-form-item label="单词" :label-width="formLabelWidth" v-show="false">
+                    <el-input v-model="form.id"></el-input>
+                </el-form-item>
+                <el-form-item label="单词" :label-width="formLabelWidth">
+                    <el-input v-model="form.word" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="状态" :label-width="formLabelWidth">
+                    <el-select v-model="form.state" placeholder="请选择状态">
+                        <el-option label="未背诵" value="0"></el-option>
+                        <el-option label="已背诵" value="1"></el-option>
+                        <el-option label="已掌握" value="2"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="中文翻译" :label-width="formLabelWidth">
+                    <el-input v-model="form.chinese" disabled></el-input>
+                </el-form-item>
+                <el-form-item label="英英简短释义" :label-width="formLabelWidth">
+                    <el-input v-model="form.enShort" disabled type="textarea" autosize></el-input>
+                </el-form-item>
+                <el-form-item label="英英详细释义" :label-width="formLabelWidth">
+                    <el-input v-model="form.enLong" disabled type="textarea" autosize></el-input>
+                </el-form-item>
+                <el-form-item label="例句" :label-width="formLabelWidth">
+                    <el-input v-model="form.example" disabled type="textarea" autosize></el-input>
+                </el-form-item>
+                <el-form-item label="笔记" :label-width="formLabelWidth">
+                    <el-input v-model="form.note" type="textarea" autosize></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="dialogFormVisible = false">取 消</el-button>
+                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
 
         <el-table
                 :data="bookInfos"
@@ -51,10 +99,17 @@
                     label="单词"
                     prop="english">
             </el-table-column>
-            <el-table-column
+            <el-table-column v-if="switcher"
                     label="翻译"
-                    prop="chinese">
+                    prop="chinese"
+                    width="200">
             </el-table-column>
+            <el-table-column v-if="!switcher"
+                    label="翻译"
+                    width="200">
+                ******
+            </el-table-column>
+
             <el-table-column
                     align="center"
                     label="上次背诵日期"
@@ -81,7 +136,22 @@
             </el-table-column>
             <el-table-column
                     align="center"
+                    label="认识次数"
+                    prop="knowCount">
+            </el-table-column><el-table-column
+                align="center"
+                label="不认识次数"
+                prop="unknownCount">
+        </el-table-column>
+            <el-table-column
+                    align="center"
+                    label="笔记"
+                    prop="note">
+            </el-table-column>
+            <el-table-column
+                    align="center"
                     label="收藏"
+                    width="50"
                     prop="collection">
                 <template slot-scope="scope">
                     <div @click="star(scope.row)">
@@ -90,9 +160,12 @@
                     </div>
                 </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column
+                    align="center"
+                    label="操作"
+                    width="150">
                 <template scope="scope">
-                    <el-button size="small">编辑</el-button>
+                    <el-button size="small" @click="edit(scope.row)">编辑</el-button>
                     <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
                 </template>
             </el-table-column>
@@ -100,7 +173,7 @@
         <el-pagination
                 :page-count="total"
                 :page-size="pageSize"
-                :page-sizes="[10,20,50,100,200]"
+                :page-sizes="[10,20,50,100,200,500]"
                 @current-change="handleCurrentChange"
                 @size-change="handleSizeChange"
                 background
@@ -127,6 +200,22 @@
                 collection: 0,//是否收藏
                 searchText: '',
                 value: '',
+                switcher: true,
+                oldWord: '',
+                totalWord: '',
+                dialogFormVisible: false,
+                form: {
+                    id: '',
+                    word: '',
+                    chinese: '',
+                    enShort: '',
+                    enLong: '',
+                    example: '',
+                    note: '',
+                    state: '',
+
+                },
+                formLabelWidth: '120px',
                 options: [{value: '5', label: '5'}, {value: '10', label: '10'}, {
                     value: '15',
                     label: '15'
@@ -156,6 +245,8 @@
                 this.$axios.get('/getRecordsByPage?bookId=' + bookId).then(res => {
                     _this.bookInfos = res.data.data.records;
                     _this.total = res.data.data.totalPage;
+                    _this.totalWord = res.data.data.totalWord;
+                    _this.oldWord = res.data.data.oldWord;
                 });
             },
             getRecited() {
@@ -198,6 +289,9 @@
                     _this.bookInfos = res.data.data.records;
                     _this.total = res.data.data.totalPage;
                 });
+            },
+            getNote(){
+
             },
             handleSizeChange(val) {
                 var bookId = this.$route.query.bookId;
@@ -271,6 +365,24 @@
                     }
                 });
             },
+            edit(row){
+                this.dialogFormVisible = true;
+                this.form.word = row.english;
+                this.form.chinese = row.chinese;
+                this.form.enLong = row.enLong;
+                this.form.enShort = row.enShort;
+                this.form.example = row.example;
+                this.form.note = row.note;
+                var curState = row.state;
+                if (curState==0){
+                    curState = '未背诵'
+                }else if (curState == 1){
+                    curState = '已背诵'
+                }else {
+                    curState = '已掌握'
+                }
+                this.form.state = curState;
+            },
             del(val){
                 const _this = this;
                 var bookId = this.$route.query.bookId;
@@ -315,5 +427,15 @@
 
     .option {
         margin-bottom: 20px;
+    }
+    .el-select{
+        width: 100px;
+    }
+    .check{
+        margin-left: 20px;
+        margin-right: 20px;
+    }
+    .learningInfo{
+        margin-left: 60px;
     }
 </style>

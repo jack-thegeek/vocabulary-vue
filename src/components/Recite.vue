@@ -5,7 +5,7 @@
             <el-breadcrumb-item>背单词</el-breadcrumb-item>
         </el-breadcrumb>
         <div class="info">
-            新学习：{{newNum}}/{{planNum}}  待复习：{{oldNum}}
+            新学习：{{newNum}}/{{planNum}} 待复习：{{oldNum}}
         </div>
         <el-card class="box-card">
             <div class="clearfix" slot="header">
@@ -29,6 +29,16 @@
                 </el-collapse-item>
                 <el-collapse-item name="4" title="例句">
                     <div class="text item">{{word.example}}</div>
+                </el-collapse-item>
+                <el-collapse-item name="5" title="笔记">
+                    <div class="text item">
+                        <el-input
+                                type="textarea"
+                                :autosize="{ minRows: 2, maxRows: 4}"
+                                v-model="noteText">
+                        </el-input>
+                        <el-button size="mini" class="submit" @click="updateNote(word.id)">提交</el-button>
+                    </div>
                 </el-collapse-item>
             </el-collapse>
         </el-card>
@@ -63,6 +73,7 @@
         data() {
             return {
                 word: '',
+                noteText: '',
                 star: 0,
                 activeNames: '',
                 group1: true,
@@ -94,6 +105,14 @@
                         _this.newNum = res.data.data.newNum;
                         _this.oldNum = res.data.data.oldNum;
                         _this.planNum = res.data.data.planNum;
+                        _this.noteText = res.data.data.record.note;
+                    }else if (res.data.msg == 'done'){
+                        _this.$alert('恭喜，当前单词书已背诵完毕！', '提示', {
+                            confirmButtonText: '确定',
+                            type: 'info'
+                        }).then(() => {
+                            _this.$router.push('/myBook')
+                        });
                     }else {
                         _this.$alert('今日单词已背诵完毕', '提示', {
                             confirmButtonText: '确定',
@@ -144,6 +163,12 @@
                     _this.getNewWord();
                 });
             },
+            updateNote(recordId){
+                const _this = this;
+                this.$axios.post('/updateNote?recordId=' + recordId + '&note=' + _this.noteText).then(res => {
+                    _this.$message.success("提交成功")
+                });
+            }
         }
     }
 </script>
@@ -172,6 +197,10 @@
         margin: 0 auto;
         margin-top: 20px;
         width: 480px;
+    }
+    .submit{
+        float: right;
+        margin: 10px;
     }
 
 </style>

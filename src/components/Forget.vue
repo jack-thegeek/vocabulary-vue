@@ -39,7 +39,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         this.$axios.post('http://localhost:8081/resetPwd?email=' + email).then(res => {
-                            _this.$message.success(res.data.msg, {duration: 5 * 1000});
+                            _this.$message.success(res.data.msg, {duration: 3 * 1000});
                         })
                     } else {
                         _this.$message.success('请输入邮箱');
