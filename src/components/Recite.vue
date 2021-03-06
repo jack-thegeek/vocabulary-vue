@@ -187,11 +187,7 @@
         margin: 0 auto;
         margin-top: 30px;
     }
-    .box-card {
-        margin: 0 auto;
-        margin-top: 50px;
-        width: 480px;
-    }
+
     .info{
         text-align: center  ;
         margin: 0 auto;

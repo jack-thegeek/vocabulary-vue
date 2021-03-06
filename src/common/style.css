@@ -3,10 +3,13 @@
     margin: 0;
 }
 .el-header{
-    padding-right: 0em;
-    padding-left: 0em;
+    padding-right: 0;
+    padding-left: 0;
 }
 .card-title {
     text-align: center;
-    color: #3θ3133;
+}
+.box-card {
+    margin: 30px auto 0;
+    width: 480px;
 }

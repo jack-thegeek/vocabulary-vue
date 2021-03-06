@@ -72,9 +72,5 @@
 </script>
 
 <style scoped>
-    .box-card {
-        margin: 0 auto;
-        margin-top: 30px;
-        width: 480px;
-    }
+
 </style>

@@ -95,8 +95,7 @@
     }
 
     .box-card {
-        margin: 0 auto;
-        margin-top: 60px;
+        margin: 60px auto 0;
         width: 480px;
     }
 </style>
