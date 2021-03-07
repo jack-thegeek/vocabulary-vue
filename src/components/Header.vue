@@ -13,6 +13,7 @@
         <el-menu-item index="/myBook">词库管理</el-menu-item>
         <el-menu-item index="/recite">背单词</el-menu-item>
         <el-menu-item index="/translate">查翻译</el-menu-item>
+        <el-menu-item index="/statistics">数据统计</el-menu-item>
         <el-menu-item index="/book">词库中心</el-menu-item>
         <el-menu-item index="/admin" v-if="admin">管理系统</el-menu-item>
         <el-menu-item @click="logout()" index="/logout" v-if="show">退出登录</el-menu-item>

@@ -6,6 +6,7 @@ import Regist from '../components/Regist.vue'
 import Forget from "../components/Forget";
 import Info from '../components/Info.vue'
 import Recite from '../components/Recite.vue'
+import Statistics from '../components/Statistics.vue'
 import Home from '../views/Home.vue'
 import Translate from '../components/Translate.vue'
 import Word from '../components/Word.vue'
@@ -33,6 +34,7 @@ const routes = [
         children:[
             {path: '/info', component: Info},
             {path: '/recite', component: Recite},
+            {path: '/statistics', component: Statistics},
             {path: '/myBook', component: MyBook},
             {path: '/translate', component: Translate},
             {path: '/book', component: Book},
