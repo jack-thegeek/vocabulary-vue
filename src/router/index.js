@@ -28,6 +28,7 @@ const routes = [
     {path: '/login', name: 'Login', component: Login},
     {path: '/regist', name: 'Regist', component: Regist},
     {path: '/forget', name: 'Forget', component: Forget},
+
     {path: '/home',
         component: Home,
         redirect: {name: "info"},

@@ -48,7 +48,7 @@
         },
         methods: {
             initData() {
-                var info = this.$store.getters.getUser;
+                const info = this.$store.getters.getUser;
                 this.username = info.name;
                 this.email = info.email;
             },
