@@ -109,7 +109,6 @@
                 ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
                 // 转base64格式、图片格式转换、图片质量压缩---支持两种格式image/jpeg+image/png
                 let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
-                console.log(imgBase64)
                 const formData = new FormData();
                 formData.append('imgBase64', imgBase64)
                 this.$axios.post("/setImage",formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
@@ -117,7 +116,6 @@
                 }).finally(
                     _this.closeCamera()
                 );
-
             },
             // 关闭摄像头
             closeCamera() {

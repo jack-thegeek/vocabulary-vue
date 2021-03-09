@@ -18,8 +18,8 @@
         name: "FaceLogin",
         data() {
             return {
-                videoWidth: 300,
-                videoHeight: 300,
+                videoWidth: 150,
+                videoHeight: 150,
             };
         },
         mounted() {
@@ -42,11 +42,28 @@
             },
             // 拍照
             photograph() {
+                const _this = this;
                 let ctx = this.$refs['canvas'].getContext('2d');
                 // 把当前视频帧内容渲染到canvas上
-                ctx.drawImage(this.$refs['video'], 0, 0, 300, 300);
+                ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
                 // 转base64格式、图片格式转换、图片质量压缩---支持两种格式image/jpeg+image/png
                 let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
+                const formData = new FormData();
+                formData.append('imgBase64', imgBase64)
+                formData.append('email', "hezijie_jack@163.com")
+                this.$axios.post("/faceLogin",formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
+                   if (res.data.code==200){
+                       this.$message.success("登录成功");
+                       const jwt = res.headers['authorization']
+                       const userInfo = res.data.data;
+                       // 把数据存储到localStorage与sessionStorage
+                       _this.$store.commit("SET_TOKEN", jwt);
+                       _this.$store.commit("SET_USERINFO", userInfo);
+                       _this.$router.push("/info");
+                   }
+                }).finally(
+                    _this.closeCamera()
+                );
             },
             // 关闭摄像头
             closeCamera() {
