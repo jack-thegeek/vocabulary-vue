@@ -18,6 +18,7 @@
                     <el-form-item>
                         <el-link href="/forget" style="float: left; padding: 3px 0" type="primary">重置密码</el-link>
                         <el-button @click="login('form')" style="float: right" type="primary">登录</el-button>
+                        <el-button @click="$router.push('/faceLogin')" style="float: right" type="primary">人脸登录</el-button>
                     </el-form-item>
                 </el-form>
             </div>

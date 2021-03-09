@@ -2,6 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import {Message,MessageBox,Loading} from 'element-ui'
 import Login from '../components/Login.vue'
+import FaceLogin from '../components/FaceLogin.vue'
 import Regist from '../components/Regist.vue'
 import Forget from "../components/Forget";
 import Info from '../components/Info.vue'
@@ -26,6 +27,7 @@ Vue.prototype.$message = Message
 const routes = [
     {path: '/', name: 'Index', redirect: {name: "Login"}},
     {path: '/login', name: 'Login', component: Login},
+    {path: '/faceLogin', name: 'FaceLogin', component: FaceLogin},
     {path: '/regist', name: 'Regist', component: Regist},
     {path: '/forget', name: 'Forget', component: Forget},
 
@@ -56,7 +58,7 @@ router.beforeEach((to, from, next) => {
 
     const token = window.localStorage.getItem('token');
     // 访问注册登录找回密码，放行
-    if (to.path == '/login' || to.path == '/regist' || to.path == '/forget') {
+    if (to.path == '/login' ||to.path == '/faceLogin' || to.path == '/regist' || to.path == '/forget') {
         if (!token) {
             return next();
         } else {
