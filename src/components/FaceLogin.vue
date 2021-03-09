@@ -30,7 +30,12 @@
             callCamera() {
                 // H5调用电脑摄像头API
                 navigator.mediaDevices.getUserMedia({
-                    video: true,
+                    audio: false,
+                    video: {
+                        width: this.videoWidth,
+                        height: this.videoHeight,
+                        transform: "scaleX(-1)"
+                    }
                 }).then(success => {
                     // 摄像头开启成功
                     this.$refs['video'].srcObject = success;
@@ -51,16 +56,16 @@
                 const formData = new FormData();
                 formData.append('imgBase64', imgBase64)
                 formData.append('email', "hezijie_jack@163.com")
-                this.$axios.post("/faceLogin",formData,{headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
-                   if (res.data.code==200){
-                       this.$message.success("登录成功");
-                       const jwt = res.headers['authorization']
-                       const userInfo = res.data.data;
-                       // 把数据存储到localStorage与sessionStorage
-                       _this.$store.commit("SET_TOKEN", jwt);
-                       _this.$store.commit("SET_USERINFO", userInfo);
-                       _this.$router.push("/info");
-                   }
+                this.$axios.post("/faceLogin", formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success("登录成功");
+                        const jwt = res.headers['authorization']
+                        const userInfo = res.data.data;
+                        // 把数据存储到localStorage与sessionStorage
+                        _this.$store.commit("SET_TOKEN", jwt);
+                        _this.$store.commit("SET_USERINFO", userInfo);
+                        _this.$router.push("/info");
+                    }
                 }).finally(
                     _this.closeCamera()
                 );

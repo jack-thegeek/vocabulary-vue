@@ -18,11 +18,21 @@
                     <el-form-item>
                         <el-link href="/forget" style="float: left; padding: 3px 0" type="primary">重置密码</el-link>
                         <el-button @click="login('form')" style="float: right" type="primary">登录</el-button>
-                        <el-button @click="$router.push('/faceLogin')" style="float: right" type="primary">人脸登录</el-button>
+                        <el-button @click="getImage" style="float: right" type="primary">人脸登录</el-button>
                     </el-form-item>
                 </el-form>
             </div>
         </el-card>
+        <el-dialog title="人脸登录" :visible.sync="dialogFormVisible" :before-close="handleClose" width="30%">
+            <span>{{tip}}</span>
+            <div class="face">
+                <video ref="video" :width="videoWidth" :height="videoHeight" autoplay></video>
+                <canvas ref="canvas" :width="videoWidth" :height="videoHeight"></canvas>
+            </div>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="handleClose" ref="cancel" size="small">取 消</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -49,7 +59,12 @@
                     password: [
                         {required: true, message: '请输入密码', trigger: 'blur'}
                     ]
-                }
+                },
+                videoWidth: 150,
+                videoHeight: 150,
+                tip: '',
+                dialogFormVisible: false,
+
             };
         },
         methods: {
@@ -74,6 +89,67 @@
                         return false;
                     }
                 });
+            },
+            getImage() {
+                this.dialogFormVisible = true;
+                this.callCamera();
+                setTimeout(this.photograph, 3000);
+            },
+            // 调用摄像头
+            callCamera() {
+                this.tip = '正在检测人像……';
+                navigator.mediaDevices.getUserMedia({
+                    audio: false,
+                    video: {
+                        width: this.videoWidth,
+                        height: this.videoHeight,
+                        transform: "scaleX(-1)",
+                    },
+                }).then(success => {
+                    this.$refs['video'].srcObject = success;
+                    this.$refs['video'].play();
+                }).catch(error => {
+                    this.$message('摄像头开启失败，请检查摄像头是否可用！');
+                })
+            },
+            // 拍照
+            photograph() {
+                const _this = this;
+                let ctx = this.$refs['canvas'].getContext('2d');
+                // 把当前视频帧内容渲染到canvas上
+                ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
+                // 转base64格式、图片格式转换、图片质量压缩---支持两种格式image/jpeg+image/png
+                let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
+                const formData = new FormData();
+                formData.append('imgBase64', imgBase64)
+                formData.append('email', "hezijie_jack@163.com")
+                this.$axios.post("/faceLogin", formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
+                    if (res.data.code == 200) {
+                        this.$message.success("登录成功");
+                        const jwt = res.headers['authorization']
+                        const userInfo = res.data.data;
+                        // 把数据存储到localStorage与sessionStorage
+                        _this.$store.commit("SET_TOKEN", jwt);
+                        _this.$store.commit("SET_USERINFO", userInfo);
+                        _this.$router.push("/info");
+                    }
+                }).finally(
+                    _this.closeCamera()
+                );
+            },
+            // 关闭摄像头
+            closeCamera() {
+                if (!this.$refs['video'].srcObject) return;
+                let stream = this.$refs['video'].srcObject;
+                let tracks = stream.getTracks();
+                tracks.forEach(track => {
+                    track.stop();
+                })
+                this.$refs['video'].srcObject = null;
+            },
+            handleClose() {
+                this.closeCamera();
+                this.dialogFormVisible = false
             }
         }
     }
@@ -98,5 +174,8 @@
     .box-card {
         margin: 60px auto 0;
         width: 480px;
+    }
+    .face {
+        text-align: center;
     }
 </style>
