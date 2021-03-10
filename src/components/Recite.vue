@@ -22,10 +22,10 @@
                     <div class="text item">{{word.chinese}}</div>
                 </el-collapse-item>
                 <el-collapse-item name="2" title="英英简短释义">
-                    <div class="text item">{{word.en_short}}</div>
+                    <div class="text item">{{word.enShort}}</div>
                 </el-collapse-item>
                 <el-collapse-item name="3" title="英英详细释义">
-                    <div class="text item">{{word.en_long}}</div>
+                    <div class="text item">{{word.enLong}}</div>
                 </el-collapse-item>
                 <el-collapse-item name="4" title="例句">
                     <div class="text item">{{word.example}}</div>
@@ -44,7 +44,7 @@
         </el-card>
 
         <el-row class="btn" v-if="group1">
-            <el-button @click="unknow(word.id)" type="danger">不认识</el-button>
+            <el-button @click="unknown(word.id)" type="danger">不认识</el-button>
             <el-button @click="know(word.id)" type="primary">认识</el-button>
             <el-button @click="master(word.id)" type="success">已掌握</el-button>
         </el-row>
@@ -124,11 +124,16 @@
                 });
             },
 
-            unknow(recordId) {
+            know() {
+                this.group1 = false;
+                this.group2 = true;
+                this.activeNames = "1";
+            },
+            unknown(recordId) {
                 this.group1 = false;
                 this.group3 = true;
                 this.activeNames = "1";
-                this.$axios.get('/unknow?recordId=' + recordId).then(res => {
+                this.$axios.get('/unknown?recordId=' + recordId).then(res => {
                     _this.getNewWord();
                 });
             },
@@ -157,7 +162,7 @@
             },
             incorrect(recordId){
                 const _this = this;
-                this.$axios.get('/unknow?recordId=' + recordId).then(res => {
+                this.$axios.get('/unknown?recordId=' + recordId).then(res => {
                     _this.getNewWord();
                 });
             },

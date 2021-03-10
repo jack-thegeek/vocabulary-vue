@@ -5,8 +5,8 @@
             <el-row>
                 <el-col :xs="24" :sm="24" :md="15" :lg="15" :xl="15">
                     <el-button @click="getAll">全部</el-button>
-                    <el-button @click="getRecited" type="primary">已背诵</el-button>
-                    <el-button @click="getNotRecited" type="danger">未背诵</el-button>
+                    <el-button @click="getRecited" type="primary">已学习</el-button>
+                    <el-button @click="getNotRecited" type="danger">未学习</el-button>
                     <el-button @click="getMaster" type="success">已掌握</el-button>
                     <el-button @click="getStar" type="warning">星标单词</el-button>
                     <el-button @click="getNote" type="info">我的笔记</el-button>

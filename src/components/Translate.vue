@@ -63,7 +63,7 @@
                 youdaoweb: '',
                 audioUrl: '',
                 searchForm: {
-                    textarea: '欢天喜地',
+                    textarea: '好好学习，天天向上',
                 },
                 rules: {
                     textarea: [

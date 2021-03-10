@@ -23,6 +23,7 @@
                 dateList: [],
                 countList: [],
                 seriesList: [],
+                masterList: [],
             }
         },
         mounted() {
@@ -35,6 +36,7 @@
                     _this.dateList = res.data.data.dateList;
                     _this.countList = res.data.data.countList;
                     _this.seriesList = res.data.data.seriesList;
+                    _this.masterList = res.data.data.masterList;
                     this.setBar();
                     this.setPie();
                 })
@@ -43,27 +45,56 @@
                 const _this = this;
                 this.bar = {
                     title: {
-                        text: '新词学习统计',
+                        text: '新单词学习与掌握统计',
                         subtext: '第一次学习就已掌握的单词，不计数',
                     },
-                    tooltip: {},
-                    xAxis: {
-                        data: _this.dateList,
+                    tooltip: {
+                        trigger: 'axis'
                     },
-                    yAxis: {},
-                    series: [{
-                        name: '个数',
-                        type: 'bar',
-                        data: _this.countList,
-                    }]
+                    legend: {
+                        data: ['新学习', '掌握']
+                    },
+                    toolbox: {
+                        show: true,
+                        feature: {
+                            dataView: {show: true, readOnly: false},
+                            magicType: {show: true, type: ['line', 'bar']},
+                            restore: {show: true},
+                            saveAsImage: {show: true}
+                        }
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: _this.dateList,
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value'
+                        }
+                    ],
+                    series: [
+                        {
+                            name: '新学习',
+                            type: 'bar',
+                            data: _this.countList,
+                        },
+                        {
+                            name: '掌握',
+                            type: 'bar',
+                            data: _this.masterList,
+                        }
+                    ]
                 }
             },
             setPie(){
                 const _this = this;
                 this.pie={
                     title: {
-                        text: '学习进度',
-                        subtext: '纯属虚构',
+                        text: '总学习进度',
+                        // subtext: '纯属虚构',
                         left: 'center'
                     },
                     tooltip: {
