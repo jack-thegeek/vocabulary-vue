@@ -22,7 +22,7 @@
             <el-form-item>
                 <el-button @click="updatePwd('form')" style="float: right" type="primary">提交</el-button>
             </el-form-item>
-        </el-form>tip
+        </el-form>
 
         <el-dialog title="人像录入" :visible.sync="dialogFormVisible" :before-close="handleClose" width="30%">
             <span>{{tip}}</span>
@@ -38,6 +38,7 @@
 </template>
 
 <script>
+    let counter = 0;
     export default {
         name: "Info",
         data() {
@@ -118,9 +119,21 @@
                 const formData = new FormData();
                 formData.append('imgBase64', imgBase64)
                 this.$axios.post("/setImage", formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
-                    _this.$message.success("人像信息更新成功！");
-                    _this.tip = '';
-                    _this.$refs['cancel'].$el.textContent = '退出';
+                    if (res.data.msg == 'success') {
+                        _this.$message.success("人像信息更新成功！");
+                        _this.tip = '人像检测成功';
+                        _this.$refs['cancel'].$el.textContent = '退出';
+                    } else {
+                        counter++;
+                        if (counter < 4) {
+                            _this.$message.error('活体检测失败');
+                            _this.tip = '检测失败，正在进行第' + counter + '次重试';
+                            setTimeout(this.photograph, 3000);
+                        }else {
+                            _this.tip = '连续多次检测失败，请稍后重试！';
+                        }
+                    }
+
                 }).finally(
                     // _this.closeCamera()
                 );

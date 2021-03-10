@@ -40,6 +40,7 @@
 <script>
     import Header from "./Header";
 
+    let counter = 0;
     export default {
         name: "Login",
         components: {Header},
@@ -54,7 +55,19 @@
                 },
                 rules: {
                     email: [
-                        {required: true, message: '请输入邮箱', trigger: 'blur'}
+                        {required: true, message: '请输入邮箱', trigger: 'blur'},
+                        {
+                            type: 'string',
+                            message: '邮箱格式不正确',
+                            trigger: 'blur',
+                            transform(value) {
+                                if (!/^\w+((-\w+)|(\.\w+))*@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$/.test(value)) {
+                                    return true
+                                } else {
+                                }
+                            }
+                        },
+                        {type: 'string', message: '长度不能超过30位', trigger: 'blur', max: 30}
                     ],
                     password: [
                         {required: true, message: '请输入密码', trigger: 'blur'}
@@ -85,15 +98,20 @@
 
                         })
                     } else {
-                        _this.$message.success('请检查字段');
+                        _this.$message.error('请检查字段');
                         return false;
                     }
                 });
             },
             getImage() {
-                this.dialogFormVisible = true;
-                this.callCamera();
-                setTimeout(this.photograph, 3000);
+                if (this.form.email == '' || this.form.email == null) {
+                    this.$message.error('请先填写正确的email');
+                } else {
+                    this.dialogFormVisible = true;
+                    this.callCamera();
+                    setTimeout(this.photograph, 3000);
+                }
+
             },
             // 调用摄像头
             callCamera() {
@@ -122,7 +140,7 @@
                 let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
                 const formData = new FormData();
                 formData.append('imgBase64', imgBase64)
-                formData.append('email', "hezijie_jack@163.com")
+                formData.append('email', _this.form.email)
                 this.$axios.post("/faceLogin", formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success("登录成功");
@@ -132,6 +150,11 @@
                         _this.$store.commit("SET_TOKEN", jwt);
                         _this.$store.commit("SET_USERINFO", userInfo);
                         _this.$router.push("/info");
+                    } else {
+                        if (counter < 3) {
+                            _this.tip = '检测失败，正在进行第' + (++counter) + '次重试';
+                            setTimeout(_this.photograph, 3000);
+                        }
                     }
                 }).finally(
                     _this.closeCamera()
@@ -175,6 +198,7 @@
         margin: 60px auto 0;
         width: 480px;
     }
+
     .face {
         text-align: center;
     }

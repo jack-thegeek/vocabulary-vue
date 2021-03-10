@@ -133,6 +133,9 @@
                 this.group1 = false;
                 this.group3 = true;
                 this.activeNames = "1";
+                this.$axios.get('/unknow?recordId=' + recordId).then(res => {
+                    _this.getNewWord();
+                });
             },
             master(recordId) {
                 const _this = this;
