@@ -124,11 +124,6 @@
                 });
             },
 
-            know(recordId) {
-                this.group1 = false;
-                this.group2 = true;
-                this.activeNames = "1";
-            },
             unknow(recordId) {
                 this.group1 = false;
                 this.group3 = true;
