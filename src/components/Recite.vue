@@ -57,8 +57,6 @@
         <el-row class="btn" v-if="group3">
             <el-button @click="getNewWord" type="danger">下一个</el-button>
         </el-row>
-
-
     </div>
 
 </template>

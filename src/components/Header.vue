@@ -40,7 +40,7 @@
                 if (userInfo != null) {
                     this.username = userInfo.name;
                     this.show = true;
-                    if (userInfo.level == 0) {
+                    if (userInfo.level == 1) {
                         this.admin = true;
                     }
                 } else {

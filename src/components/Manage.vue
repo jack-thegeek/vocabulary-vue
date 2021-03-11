@@ -1,6 +1,5 @@
 <template>
-    <div class="container">
-
+    <div class="manage">
         <div class="btn-group">
             <el-row>
                 <el-col :xs="24" :sm="24" :md="15" :lg="15" :xl="15">
@@ -23,7 +22,6 @@
                 </el-col>
             </el-row>
         </div>
-
         <div class="option">
             每天学习的新单词量
             <el-select v-model="value">
@@ -83,7 +81,7 @@
                 <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
             </div>
         </el-dialog>
-
+<!--        表格-->
         <el-table
                 :data="bookInfos"
                 border
@@ -170,6 +168,7 @@
                 </template>
             </el-table-column>
         </el-table>
+
         <el-pagination
                 :page-count="total"
                 :page-size="pageSize"
@@ -410,7 +409,8 @@
 </script>
 
 <style scoped>
-    .container {
+    .manage {
+        overflow:auto;
         width: 80%;
         margin: 0 auto;
     }

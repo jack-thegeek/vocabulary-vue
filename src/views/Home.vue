@@ -3,7 +3,7 @@
         <el-header>
             <Header></Header>
         </el-header>
-        <el-main>
+        <el-main class="full-height">
             <router-view></router-view>
         </el-main>
         <el-footer>
@@ -41,7 +41,7 @@
         height: 100%;
     }
 
-    .el-footer {
-        margin-top: 180px;
+    .full-height {
+        height: 100vh;
     }
 </style>

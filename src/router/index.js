@@ -14,6 +14,7 @@ import Word from '../components/Word.vue'
 import Book from '../components/Book.vue'
 import MyBook from '../components/MyBook.vue'
 import Manage from '../components/Manage.vue'
+import Admin from '../components/Admin.vue'
 
 Vue.use(VueRouter)
 Vue.use(Loading.directive)
@@ -30,6 +31,7 @@ const routes = [
     {path: '/faceLogin', name: 'FaceLogin', component: FaceLogin},
     {path: '/regist', name: 'Regist', component: Regist},
     {path: '/forget', name: 'Forget', component: Forget},
+    {path: '/admin', name: 'Admin', component: Admin},
 
     {path: '/home',
         component: Home,

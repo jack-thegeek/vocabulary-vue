@@ -1,8 +1,5 @@
 <template>
-    <el-container>
-        <div>
-
-        </div>
+    <div>
         <div class="chart-container">
             <el-row :gutter="32" type="flex" justify="center">
                 <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
@@ -13,10 +10,7 @@
                 </el-col>
             </el-row>
         </div>
-        <div>
-
-        </div>
-    </el-container>
+    </div>
 </template>
 
 <script>
@@ -66,7 +60,7 @@
                         trigger: 'axis'
                     },
                     legend: {
-                        data: ['新学习', '掌握']
+                        data: ['新学习', '已掌握']
                     },
                     toolbox: {
                         show: true,
@@ -96,7 +90,7 @@
                             data: _this.countList,
                         },
                         {
-                            name: '掌握',
+                            name: '已掌握',
                             type: 'bar',
                             data: _this.masterList,
                         }
