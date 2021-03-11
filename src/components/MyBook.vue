@@ -6,6 +6,7 @@
                 <el-breadcrumb-item>我的单词书</el-breadcrumb-item>
             </el-breadcrumb>
             <el-button type="primary" plain @click="downloadExample">点此下载模板</el-button>
+            <el-button type="primary" plain @click="upload">上传我的单词书</el-button>
         </div>
 
         <el-row :gutter="25">
@@ -35,27 +36,37 @@
                     </div>
                 </el-card>
             </el-col>
-            <el-col :span="7">
-                <el-card :body-style="{ padding: '20px' }">
-                    <el-upload
-                            class="upload-demo"
-                            drag
-                            :action="uploadUrl"
-                            :before-upload="handleBeforeUpload"
-                            :on-error="handleUploadError"
-                            :before-remove="beforeRemove"
-                            :on-exceed="handleExceed"
-                            multiple
-                            :limit="5"
-                            :file-list="fileList">
-                        <i class="el-icon-upload"></i>
-                        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                        <div class="el-upload__tip" slot="tip">请先下载模板修改后再上传，最多同时上传5个文件</div>
-                    </el-upload>
-
-                </el-card>
-            </el-col>
         </el-row>
+
+        <el-dialog title="上传" :visible.sync="dialogFormVisible" width="30%">
+            <el-form :rules="rules" :model="dataForm" ref="dataForm" label-width="20%" @submit.native.prevent>
+                <el-form-item label="名称：" prop="name">
+                    <el-input type="text" v-model.trim="dataForm.name" clearable></el-input>
+                </el-form-item>
+                <el-form-item label="文件：" prop="file">
+                    <el-upload
+                            class="upload-import"
+                            ref="uploadImport"
+                            action="#"
+                            :on-remove="handleRemove"
+                            :file-list="fileList"
+                            :limit="1"
+                            :on-change="handleChange"
+                            :auto-upload="false"
+                            accept=".xlsx">
+                        <!-- el-upload组件,在手动上传时,禁用按钮外, 还需要设置    :disabled="hasFile"
+                        为true禁用该组件,会导致上传列表也被禁用,无法删除,因此使用v-show,文件数量为1时,显示禁用的的按钮, slot不绑定trigger事件 -->
+                        <el-button v-show="!hasFile" slot="trigger" size="small" type="primary">选取文件</el-button>
+                        <el-button v-show="hasFile" size="small" type="primary" disabled>选取文件</el-button>
+                        <div slot="tip" class="el-upload__tip">请先下载模板，修改后上传</div>
+                    </el-upload>
+                </el-form-item>
+            </el-form>
+            <span slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="onSureHandle" size="small">提 交</el-button>
+                <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
+            </span>
+        </el-dialog>
     </div>
 
 </template>
@@ -75,7 +86,23 @@
                 curBook: '',
                 bookInfos: '',
                 myBooks: '',
-                uploadUrl: 'http://localhost:8081/fileUpload',
+                dialogFormVisible: false,
+                formLabelWidth: '120px',
+
+                dataForm: {
+                    name: '你好',
+                    file: null
+                },
+                rules: {
+                    name: [
+                        {required: true, message: "请输入名称", trigger: "blur"},
+                        {max: 20, message: "最长可输入20个字符", trigger: "blur"},
+                    ],
+                    file: [
+                        {required: true, message: "请选择上传文件", trigger: "blur"},
+                    ]
+                },
+                hasFile: false,
                 fileList: [],
             };
         },
@@ -123,30 +150,46 @@
             downloadExample() {
                 window.open("http://localhost:8081/download?fileName=example.xlsx", '_blank');
             },
-            handleExceed(files, fileList) {
-                this.$message.warning(`当前限制选择 5 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+            handleRemove(file, fileList) {
+                if (!fileList.length) {
+                    this.hasFile = false;
+                }
+                this.dataForm.file = null;
             },
-            beforeRemove(file, fileList) {
-                return this.$confirm(`确定移除 ${file.name}？`);
+            handleChange(file, fileList) {
+                if (fileList.length >= 2) {
+                    return;
+                }
+                if (fileList.length === 1) {
+                    this.hasFile = true;
+                }
+                this.dataForm.file = file;
             },
-            handleUploadError(error, file) {
-                console.log("文件上传出错：" + error)
-
-            },
-            handleBeforeUpload(file) {
-                let formData = new FormData();
-                formData.append("multipartFiles", file);
-                this.$axios({
-                    method: 'post',
-                    url: 'http://localhost:8081/fileUpload',
-                    data: formData,
-                    headers: {'Content-Type': 'multipart/form-data'}
-                }).then((res) => {
-                    console.log("文件上传返回：" + res)
-                }).catch(error => {
-                    console.log("文件上传异常:" + error)
+            //确定按钮
+            onSureHandle() {
+                const _this = this;
+                this.$refs.dataForm.validate(valid => {
+                    if (valid) {
+                        let dataPar = _this.dataForm;
+                        let formData = new FormData();
+                        formData.append('fileName', dataPar.name);
+                        formData.append('file', dataPar.file.raw);
+                        _this.$axios.post('/fileUpload', formData, {
+                            headers: {'Content-Type': 'multipart/form-data'},//定义内容格式,很重要
+                            timeout: 20000,
+                        }).then(res => {
+                            if (res.data.code==200){
+                                _this.$message.success(res.data.msg);
+                            }
+                        }).catch(err => {
+                            console.log(err)
+                        })
+                    }
                 })
             },
+            upload() {
+                this.dialogFormVisible = true;
+            }
         }
     }
 </script>
@@ -160,6 +203,7 @@
     .el-breadcrumb {
         margin-bottom: 20px;
     }
+
     .bottom {
         margin-top: 13px;
         line-height: 12px;
@@ -168,6 +212,7 @@
     .el-upload-dragger {
         width: 0;
     }
+
     .info {
         font-size: 13px;
         color: #999;

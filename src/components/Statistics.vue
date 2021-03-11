@@ -13,7 +13,9 @@
                 </el-col>
             </el-row>
         </div>
+        <div>
 
+        </div>
     </el-container>
 </template>
 
@@ -140,7 +142,7 @@
 
 <style scoped>
     .chart-container {
-        margin: 0 auto;
+        margin: 2% auto 0;
         width: 80%;
         height: 100%;
     }
