@@ -5,8 +5,12 @@
         </div>
         <div class="chart-container">
             <el-row :gutter="32" type="flex" justify="center">
-                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24"><v-chart class="chart" :option="bar"/></el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24"><v-chart class="chart" :option="pie"/></el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                    <v-chart class="chart" :option="bar"/>
+                </el-col>
+                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+                    <v-chart class="chart" :option="pie"/>
+                </el-col>
             </el-row>
         </div>
 
@@ -30,7 +34,7 @@
             this.setData();
         },
         methods: {
-            setData(){
+            setData() {
                 const _this = this;
                 this.$axios.get("/listRecordData").then(res => {
                     _this.dateList = res.data.data.dateList;
@@ -41,9 +45,17 @@
                     this.setPie();
                 })
             },
-            setBar(){
+            setBar() {
                 const _this = this;
                 this.bar = {
+                    dataZoom: [{
+                        type: 'inside',//slider表示有滑动块的，inside表示内置的
+                        start: 50,//数据窗口范围的起始百分比,表示0%
+                        end: 100,
+                        // startValue: 0,//数据窗口范围的起始数值
+                        // endValue: 9,//数据窗口范围的结束数值。
+                        handleSize: 10
+                    }],
                     title: {
                         text: '新单词学习与掌握统计',
                         subtext: '第一次学习就已掌握的单词，不计数',
@@ -89,9 +101,9 @@
                     ]
                 }
             },
-            setPie(){
+            setPie() {
                 const _this = this;
-                this.pie={
+                this.pie = {
                     title: {
                         text: '总学习进度',
                         // subtext: '纯属虚构',
@@ -127,11 +139,12 @@
 </script>
 
 <style scoped>
-    .chart-container{
+    .chart-container {
         margin: 0 auto;
         width: 80%;
         height: 100%;
     }
+
     .chart {
         width: 100%;
         height: 360px;
