@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import {Message,MessageBox,Loading} from 'element-ui'
+import {Loading, Message, MessageBox} from 'element-ui'
 import Login from '../components/Login.vue'
 import FaceLogin from '../components/FaceLogin.vue'
 import Regist from '../components/Regist.vue'
@@ -14,7 +14,9 @@ import Word from '../components/Word.vue'
 import Book from '../components/Book.vue'
 import MyBook from '../components/MyBook.vue'
 import Manage from '../components/Manage.vue'
-import Admin from '../components/Admin.vue'
+import Admin from '../views/Admin.vue'
+import ManageUser from '../components/ManageUser.vue'
+import axios from "axios";
 
 Vue.use(VueRouter)
 Vue.use(Loading.directive)
@@ -31,12 +33,20 @@ const routes = [
     {path: '/faceLogin', name: 'FaceLogin', component: FaceLogin},
     {path: '/regist', name: 'Regist', component: Regist},
     {path: '/forget', name: 'Forget', component: Forget},
-    {path: '/admin', name: 'Admin', component: Admin},
 
-    {path: '/home',
+    {
+        path: '/admin',
+        component: Admin,
+        redirect: "/manageUser",
+        children: [
+            {path: '/manageUser', component: ManageUser},
+        ]
+    },
+    {
+        path: '/home',
         component: Home,
-        redirect: {name: "info"},
-        children:[
+        redirect: "/info",
+        children: [
             {path: '/info', component: Info},
             {path: '/recite', component: Recite},
             {path: '/statistics', component: Statistics},
@@ -50,6 +60,7 @@ const routes = [
 ]
 
 
+
 const router = new VueRouter({
     mode: 'history',
     base: process.env.BASE_URL,
@@ -60,12 +71,23 @@ router.beforeEach((to, from, next) => {
 
     const token = window.localStorage.getItem('token');
     // 访问注册登录找回密码，放行
-    if (to.path == '/login' ||to.path == '/faceLogin' || to.path == '/regist' || to.path == '/forget') {
+    if (to.path == '/login' || to.path == '/faceLogin' || to.path == '/regist' || to.path == '/forget') {
         if (!token) {
             return next();
         } else {
             return next({path: '/home'})
         }
+    }
+    if (to.path == '/admin') {
+        axios.get("/getPermission").then(res => {
+            const role = res.data.data;
+            if (role == 'admin') {
+                return next();
+            } else {
+                return next({path: '/home'})
+            }
+        });
+
     }
 
     if (to.path == '/401') {

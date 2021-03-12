@@ -7,8 +7,6 @@
                     <el-menu
                             default-active="1"
                             class="el-menu"
-                            @open="handleOpen"
-                            @close="handleClose"
                             text-color="#616161"
                             active-text-color="#212121">
                         <el-menu-item index="1">
@@ -33,14 +31,21 @@
 
         </el-aside>
         <el-main>
-
+            <router-view></router-view>
         </el-main>
     </el-container>
 </template>
 
 <script>
     export default {
-        name: "admin"
+        name: "admin",
+        data() {
+
+        },
+        mounted: function () {
+
+        },
+        methods: {}
     }
 </script>
 
