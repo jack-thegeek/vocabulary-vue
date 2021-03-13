@@ -7,8 +7,6 @@ export default new Vuex.Store({
     state: {
         token: '',
         userInfo: JSON.parse(localStorage.getItem("userInfo")),
-        searchState: JSON.parse(sessionStorage.getItem("searchState")),
-
     },
     mutations: {
         // set
@@ -19,10 +17,6 @@ export default new Vuex.Store({
         SET_USERINFO: (state, userInfo) => {
             state.userInfo = userInfo;
             localStorage.setItem("userInfo", JSON.stringify(userInfo))
-        },
-        SET_SEARCHSTATE: (state, searchState) => {
-            state.searchState = searchState;
-            sessionStorage.setItem("searchState", JSON.stringify(searchState))
         },
         REMOVE_INFO: (state) => {
             state.token = '';
