@@ -9,12 +9,13 @@
             text-color="#fff"
             type="flex">
         <el-menu-item disabled index="1">欢迎回来，{{username}}</el-menu-item>
-        <el-menu-item index="/info">个人信息</el-menu-item>
-        <el-menu-item index="/myBook">词库管理</el-menu-item>
-        <el-menu-item index="/recite">背单词</el-menu-item>
-        <el-menu-item index="/translate">查翻译</el-menu-item>
-        <el-menu-item index="/statistics">数据统计</el-menu-item>
-        <el-menu-item index="/book">词库中心</el-menu-item>
+        <el-menu-item index="/home/info">个人信息</el-menu-item>
+        <el-menu-item index="/home/myBook">词库管理</el-menu-item>
+        <el-menu-item index="/home/upload">审核进度</el-menu-item>
+        <el-menu-item index="/home/recite">背单词</el-menu-item>
+        <el-menu-item index="/home/translate">查翻译</el-menu-item>
+        <el-menu-item index="/home/statistics">数据统计</el-menu-item>
+        <el-menu-item index="/home/book">词库中心</el-menu-item>
         <el-menu-item index="/admin" v-if="admin">管理系统</el-menu-item>
         <el-menu-item @click="logout()" index="/logout" v-if="show">退出登录</el-menu-item>
     </el-menu>
@@ -24,7 +25,7 @@
     export default {
         name: "Header",
         data() {
-            activeIndex: this.$route.path
+            this.$route.path;
             return {
                 username: '',
                 show: false,

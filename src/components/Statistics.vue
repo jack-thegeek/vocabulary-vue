@@ -1,12 +1,12 @@
 <template>
     <div>
         <div class="chart-container">
-            <el-row :gutter="32" type="flex" justify="center">
-                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                    <v-chart class="chart" :option="bar"/>
+            <el-row :gutter="32" justify="center" type="flex">
+                <el-col :lg="24" :md="24" :sm="24" :xl="24" :xs="24">
+                    <v-chart :option="bar" class="chart"/>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
-                    <v-chart class="chart" :option="pie"/>
+                <el-col :lg="24" :md="24" :sm="24" :xl="24" :xs="24">
+                    <v-chart :option="pie" class="chart"/>
                 </el-col>
             </el-row>
         </div>

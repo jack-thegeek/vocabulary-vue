@@ -24,13 +24,13 @@
             </el-form-item>
         </el-form>
 
-        <el-dialog title="人像录入" :visible.sync="dialogFormVisible" :before-close="handleClose" width="30%">
+        <el-dialog :before-close="handleClose" :visible.sync="dialogFormVisible" title="人像录入" width="30%">
             <span>{{tip}}</span>
             <div class="face">
-                <video ref="video" :width="videoWidth" :height="videoHeight" autoplay></video>
-                <canvas ref="canvas" :width="videoWidth" :height="videoHeight"></canvas>
+                <video :height="videoHeight" :width="videoWidth" autoplay ref="video"></video>
+                <canvas :height="videoHeight" :width="videoWidth" ref="canvas"></canvas>
             </div>
-            <div slot="footer" class="dialog-footer">
+            <div class="dialog-footer" slot="footer">
                 <el-button @click="handleClose" ref="cancel" size="small">取 消</el-button>
             </div>
         </el-dialog>
@@ -113,23 +113,23 @@
             // 拍照
             photograph() {
                 const _this = this;
-                let ctx = this.$refs['canvas'].getContext('2d');
+                let ctx = this.$refs['canvas'].getCon('2d');
                 ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
                 let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
                 const formData = new FormData();
-                formData.append('imgBase64', imgBase64)
+                formData.append('imgBase64', imgBase64);
                 this.$axios.post("/setImage", formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
                     if (res.data.msg == 'success') {
                         _this.$message.success("人像信息更新成功！");
                         _this.tip = '人像检测成功';
-                        _this.$refs['cancel'].$el.textContent = '退出';
+                        _this.$refs['cancel'].$el.Content = '退出';
                     } else {
                         counter++;
                         if (counter < 4) {
                             _this.$message.error('活体检测失败');
                             _this.tip = '检测失败，正在进行第' + counter + '次重试';
                             setTimeout(this.photograph, 3000);
-                        }else {
+                        } else {
                             _this.tip = '连续多次检测失败，请稍后重试！';
                         }
                     }
@@ -145,7 +145,7 @@
                 let tracks = stream.getTracks();
                 tracks.forEach(track => {
                     track.stop();
-                })
+                });
                 this.$refs['video'].srcObject = null;
             },
             handleClose() {
@@ -158,6 +158,6 @@
 
 <style scoped>
     .face {
-        text-align: center;
+        -align: center;
     }
 </style>

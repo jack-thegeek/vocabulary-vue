@@ -84,7 +84,7 @@
                     this.$axios.post('http://localhost:8081/sendEmail?email=' + email).then(res => {
                         if (res.data.code == 200) {
                             alert(res.data.msg);
-                            const jwt = res.headers['authorization']
+                            const jwt = res.headers['authorization'];
                             // 把数据共享出去
                             _this.$store.commit("SET_TOKEN", jwt)
                         }

@@ -10,10 +10,10 @@
                         <div class="bottom clearfix">
                             <div class="info">{{info.bookInfo}}</div>
                             <div class="author">作者：{{info.author}}</div>
-                            <el-button class="button" type="text" disabled v-if="myBooks.indexOf(info.id)>-1">
+                            <el-button class="button" disabled type="" v-if="myBooks.indexOf(info.id)>-1">
                                 已拥有
                             </el-button>
-                            <el-button @click="addToLibrary(info.id)" class="button" type="text" v-else>
+                            <el-button @click="addToLibrary(info.id)" class="button" type="" v-else>
                                 添加
                             </el-button>
                         </div>
@@ -32,10 +32,10 @@
             const _this = this;
 
             this.$axios.get('/getAllBooks').then(res => {
-                var bookInfos = res.data.data.bookInfos
+                var bookInfos = res.data.data.bookInfos;
                 _this.bookInfos = bookInfos;
                 var myBooks = res.data.data.myBooks;
-                var myBookIds = new Array();
+                var myBookIds = [];
                 for (var i = 0; i < myBooks.length; i++) {
                     myBookIds[i] = myBooks[i].bookId;
                 }
@@ -53,7 +53,7 @@
                 const _this = this;
                 this.$axios.get('/addToLibrary?bookId=' + bookId).then(res => {
                     this.$alert('添加成功', '提示', {
-                        confirmButtonText: '确定',
+                        confirmButton: '确定',
                         type: 'info'
                     }).then(() => {
                         location.reload();

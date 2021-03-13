@@ -33,11 +33,11 @@
                 <el-collapse-item name="5" title="笔记">
                     <div class="text item">
                         <el-input
-                                type="textarea"
                                 :autosize="{ minRows: 2, maxRows: 4}"
+                                type="textarea"
                                 v-model="noteText">
                         </el-input>
-                        <el-button size="mini" class="submit" @click="updateNote(word.id)">提交</el-button>
+                        <el-button @click="updateNote(word.id)" class="submit" size="mini">提交</el-button>
                     </div>
                 </el-collapse-item>
             </el-collapse>
@@ -89,7 +89,7 @@
             this.getNewWord();
         },
         methods: {
-            getNewWord(){
+            getNewWord() {
                 this.activeNames = "";
                 this.group1 = true;
                 this.group2 = false;
@@ -97,26 +97,26 @@
                 const _this = this;
 
                 this.$axios.get('/getNewWord').then(res => {
-                    if (res.data.msg=='success'){
+                    if (res.data.msg == 'success') {
                         _this.word = res.data.data.record;
                         _this.star = res.data.data.record.collection;
                         _this.newNum = res.data.data.newNum;
                         _this.oldNum = res.data.data.oldNum;
                         _this.planNum = res.data.data.planNum;
                         _this.noteText = res.data.data.record.note;
-                    }else if (res.data.msg == 'done'){
+                    } else if (res.data.msg == 'done') {
                         _this.$alert('恭喜，当前单词书已背诵完毕！', '提示', {
                             confirmButtonText: '确定',
                             type: 'info'
                         }).then(() => {
-                            _this.$router.push('/myBook')
+                            _this.$router.push('/home/myBook')
                         });
-                    }else {
+                    } else {
                         _this.$alert('今日单词已背诵完毕', '提示', {
                             confirmButtonText: '确定',
                             type: 'info'
                         }).then(() => {
-                            _this.$router.push('/myBook')
+                            _this.$router.push('/home/myBook')
                         });
                     }
                 });
@@ -152,19 +152,19 @@
                     }
                 });
             },
-            correct(recordId){
+            correct(recordId) {
                 const _this = this;
                 this.$axios.get('/know?recordId=' + recordId).then(res => {
                     _this.getNewWord();
                 });
             },
-            incorrect(recordId){
+            incorrect(recordId) {
                 const _this = this;
                 this.$axios.get('/unknown?recordId=' + recordId).then(res => {
                     _this.getNewWord();
                 });
             },
-            updateNote(recordId){
+            updateNote(recordId) {
                 const _this = this;
                 this.$axios.post('/updateNote?recordId=' + recordId + '&note=' + _this.noteText).then(res => {
                     _this.$message.success("提交成功")
@@ -189,13 +189,14 @@
         margin-top: 30px;
     }
 
-    .info{
-        text-align: center  ;
+    .info {
+        text-align: center;
         margin: 0 auto;
         margin-top: 20px;
         width: 480px;
     }
-    .submit{
+
+    .submit {
         float: right;
         margin: 10px;
     }

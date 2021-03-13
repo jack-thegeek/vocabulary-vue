@@ -5,8 +5,8 @@
                 <el-breadcrumb-item>词库管理</el-breadcrumb-item>
                 <el-breadcrumb-item>我的单词书</el-breadcrumb-item>
             </el-breadcrumb>
-            <el-button type="primary" plain @click="downloadExample">点此下载模板</el-button>
-            <el-button type="primary" plain @click="upload">上传我的单词书</el-button>
+            <el-button @click="downloadExample" plain type="primary">点此下载模板</el-button>
+            <el-button @click="upload" plain type="primary">上传我的单词书</el-button>
         </div>
 
         <el-row :gutter="25">
@@ -19,7 +19,7 @@
                         <div class="bottom clearfix">
                             <div class="info">{{info.bookInfo}}</div>
                             <div class="author">作者：{{info.author}}</div>
-                            <el-button disabled class="button" style="float: right" type="text" v-if="curBook==info.id">
+                            <el-button class="button" disabled style="float: right" type="" v-if="curBook==info.id">
                                 当前背诵
                             </el-button>
                             <el-button @click="setDefaultBook(info.id)" class="button" style="float: right" type="text"
@@ -38,32 +38,42 @@
             </el-col>
         </el-row>
 
-        <el-dialog title="上传" :visible.sync="dialogFormVisible" width="30%">
-            <el-form :rules="rules" :model="dataForm" ref="dataForm" label-width="20%" @submit.native.prevent>
+        <el-dialog :visible.sync="dialogFormVisible" title="上传" width="30%">
+            <el-form :model="dataForm" :rules="rules" @submit.native.prevent label-width="20%" ref="dataForm">
                 <el-form-item label="名称：" prop="name">
-                    <el-input type="text" v-model.trim="dataForm.name" clearable></el-input>
+                    <el-input clearable type="" v-model.trim="dataForm.name"></el-input>
+                </el-form-item>
+                <el-form-item label="性质：" prop="name">
+                    <el-select v-model="dataForm.isPublic">
+                        <el-option label="公共" value="1"></el-option>
+                        <el-option label="私有" value="0"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="简介">
+                    <el-input type="textarea" autosize v-model.trim="dataForm.bookInfo"
+                              aria-placeholder="请输入简介"></el-input>
                 </el-form-item>
                 <el-form-item label="文件：" prop="file">
                     <el-upload
-                            class="upload-import"
-                            ref="uploadImport"
-                            action="#"
-                            :on-remove="handleRemove"
+                            :auto-upload="false"
                             :file-list="fileList"
                             :limit="1"
                             :on-change="handleChange"
-                            :auto-upload="false"
-                            accept=".xlsx">
+                            :on-remove="handleRemove"
+                            accept=".xlsx"
+                            action="#"
+                            class="upload-import"
+                            ref="uploadImport">
                         <!-- el-upload组件,在手动上传时,禁用按钮外, 还需要设置    :disabled="hasFile"
                         为true禁用该组件,会导致上传列表也被禁用,无法删除,因此使用v-show,文件数量为1时,显示禁用的的按钮, slot不绑定trigger事件 -->
-                        <el-button v-show="!hasFile" slot="trigger" size="small" type="primary">选取文件</el-button>
-                        <el-button v-show="hasFile" size="small" type="primary" disabled>选取文件</el-button>
-                        <div slot="tip" class="el-upload__tip">请先下载模板，修改后上传</div>
+                        <el-button size="small" slot="trigger" type="primary" v-show="!hasFile">选取文件</el-button>
+                        <el-button disabled size="small" type="primary" v-show="hasFile">选取文件</el-button>
+                        <div class="el-upload__tip" slot="tip">请先下载模板，修改后上传</div>
                     </el-upload>
                 </el-form-item>
             </el-form>
-            <span slot="footer" class="dialog-footer">
-                <el-button type="primary" @click="onSureHandle" size="small">提 交</el-button>
+            <span class="dialog-footer" slot="footer">
+                <el-button @click="onSureHandle" size="small" type="primary">提 交</el-button>
                 <el-button @click="dialogFormVisible = false" size="small">取 消</el-button>
             </span>
         </el-dialog>
@@ -90,8 +100,10 @@
                 formLabelWidth: '120px',
 
                 dataForm: {
-                    name: '你好',
-                    file: null
+                    name: '考研英语必备单词',
+                    file: null,
+                    isPublic: '',
+                    bookInfo: '',
                 },
                 rules: {
                     name: [
@@ -110,15 +122,15 @@
             setDefaultBook(bookId) {
                 const _this = this;
                 this.$axios.get('/setDefaultBook?bookId=' + bookId).then(res => {
-                    _this.$message.success(res.data.msg)
+                    _this.$message.success(res.data.msg);
                     location.reload();
                 });
             },
             delBook(bookId) {
                 const _this = this;
                 this.$confirm('此操作将永久删除相关背诵记录, 是否继续?', '提示', {
-                    confirmButtonText: '确定',
-                    cancelButtonText: '取消',
+                    confirmButton: '确定',
+                    cancelButton: '取消',
                     type: 'warning'
                 }).then(() => {
                     if (_this.curBook == bookId) {
@@ -143,7 +155,7 @@
 
             toManage(bookId) {
                 this.$router.push({
-                    path: "/manage",
+                    path: "/home/manage",
                     query: {bookId: bookId}
                 });
             },
@@ -173,12 +185,14 @@
                         let dataPar = _this.dataForm;
                         let formData = new FormData();
                         formData.append('fileName', dataPar.name);
+                        formData.append('isPublic', dataPar.isPublic);
+                        formData.append('bookInfo', dataPar.bookInfo);
                         formData.append('file', dataPar.file.raw);
                         _this.$axios.post('/fileUpload', formData, {
                             headers: {'Content-Type': 'multipart/form-data'},//定义内容格式,很重要
                             timeout: 20000,
                         }).then(res => {
-                            if (res.data.code==200){
+                            if (res.data.code == 200) {
                                 _this.$message.success(res.data.msg);
                             }
                         }).catch(err => {

@@ -3,7 +3,7 @@
         <div class="clearfix card-title" slot="header">
             <h3>重置密码</h3>
         </div>
-        <div class="text item">
+        <div class=" item">
             <el-form :model="form" :rules="rules" label-width="80px" ref="form">
                 <el-form-item label="邮箱" prop="email">
                     <el-input placeholder="请输入注册邮箱" v-model="form.email"></el-input>

@@ -9,7 +9,7 @@
 
                 <p></p>
                 <el-form :model="searchForm" :rules="rules" ref="searchForm">
-                    <el-form-item label="" prop="textarea">
+                    <el-form-item label="" prop="text">
                         <el-input
                                 :rows="4"
                                 placeholder="请输入内容"

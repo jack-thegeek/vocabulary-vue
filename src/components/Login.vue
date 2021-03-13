@@ -6,7 +6,7 @@
                 <h3>用户登录</h3>
                 <el-link href="/regist" style="float: right; padding: 3px 0" type="primary">去注册</el-link>
             </div>
-            <div class="text item">
+            <div class=" item">
                 <el-form :model="form" :rules="rules" label-width="80px" ref="form">
                     <el-form-item label="邮箱" prop="email">
                         <el-input placeholder="请输入邮箱" v-model="form.email"></el-input>
@@ -23,13 +23,13 @@
                 </el-form>
             </div>
         </el-card>
-        <el-dialog title="人脸登录" :visible.sync="dialogFormVisible" :before-close="handleClose" width="30%">
+        <el-dialog :before-close="handleClose" :visible.sync="dialogFormVisible" title="人脸登录" width="30%">
             <span>{{tip}}</span>
             <div class="face">
-                <video ref="video" :width="videoWidth" :height="videoHeight" autoplay></video>
-                <canvas ref="canvas" :width="videoWidth" :height="videoHeight"></canvas>
+                <video :height="videoHeight" :width="videoWidth" autoplay ref="video"></video>
+                <canvas :height="videoHeight" :width="videoWidth" ref="canvas"></canvas>
             </div>
-            <div slot="footer" class="dialog-footer">
+            <div class="dialog-footer" slot="footer">
                 <el-button @click="handleClose" ref="cancel" size="small">取 消</el-button>
             </div>
         </el-dialog>
@@ -88,12 +88,12 @@
                         this.$axios.post('/login', this.form).then(res => {
                             if (res.data.code == 200) {
                                 _this.$message.success(res.data.msg);
-                                const jwt = res.headers['authorization']
+                                const jwt = res.headers['authorization'];
                                 const userInfo = res.data.data;
                                 // 把数据存储到localStorage与sessionStorage
                                 _this.$store.commit("SET_TOKEN", jwt);
                                 _this.$store.commit("SET_USERINFO", userInfo);
-                                _this.$router.push("/info");
+                                _this.$router.push("/home/info");
                             }
 
                         })
@@ -133,23 +133,23 @@
             // 拍照
             photograph() {
                 const _this = this;
-                let ctx = this.$refs['canvas'].getContext('2d');
+                let ctx = this.$refs['canvas'].getCon('2d');
                 // 把当前视频帧内容渲染到canvas上
                 ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
                 // 转base64格式、图片格式转换、图片质量压缩---支持两种格式image/jpeg+image/png
                 let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
                 const formData = new FormData();
-                formData.append('imgBase64', imgBase64)
-                formData.append('email', _this.form.email)
+                formData.append('imgBase64', imgBase64);
+                formData.append('email', _this.form.email);
                 this.$axios.post("/faceLogin", formData, {headers: {'Content-Type': 'multipart/form-data'}}).then(res => {
                     if (res.data.code == 200) {
                         this.$message.success("登录成功");
-                        const jwt = res.headers['authorization']
+                        const jwt = res.headers['authorization'];
                         const userInfo = res.data.data;
                         // 把数据存储到localStorage与sessionStorage
                         _this.$store.commit("SET_TOKEN", jwt);
                         _this.$store.commit("SET_USERINFO", userInfo);
-                        _this.$router.push("/info");
+                        _this.$router.push("/home/info");
                     } else {
                         if (counter < 3) {
                             _this.tip = '检测失败，正在进行第' + (++counter) + '次重试';
@@ -167,7 +167,7 @@
                 let tracks = stream.getTracks();
                 tracks.forEach(track => {
                     track.stop();
-                })
+                });
                 this.$refs['video'].srcObject = null;
             },
             handleClose() {
@@ -200,6 +200,6 @@
     }
 
     .face {
-        text-align: center;
+        -align: center;
     }
 </style>

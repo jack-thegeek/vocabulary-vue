@@ -2,7 +2,7 @@
     <div class="manage">
         <div class="btn-group">
             <el-row>
-                <el-col :xs="24" :sm="24" :md="15" :lg="15" :xl="15">
+                <el-col :lg="15" :md="15" :sm="24" :xl="15" :xs="24">
                     <el-button @click="getAll">全部</el-button>
                     <el-button @click="getRecited" type="primary">已学习</el-button>
                     <el-button @click="getNotRecited" type="danger">未学习</el-button>
@@ -11,14 +11,14 @@
                     <el-button @click="getNote" type="info">我的笔记</el-button>
                     <el-button @click="download" type="button">导出全部</el-button>
                 </el-col>
-                <el-col :xs="24" :sm="24" :md="9" :lg="9" :xl="9">
+                <el-col :lg="9" :md="9" :sm="24" :xl="9" :xs="24">
                     <el-input
-                            style="width:200px"
+                            clearable
                             placeholder="查找本单词书中的单词"
-                            v-model="searchText"
-                            clearable>
+                            style="width:200px"
+                            v-model="searchText">
                     </el-input>
-                    <el-button icon="el-icon-search" circle style="margin-left: 10px" @click="searchWord"></el-button>
+                    <el-button @click="searchWord" circle icon="el-icon-search" style="margin-left: 10px"></el-button>
                 </el-col>
             </el-row>
         </div>
@@ -26,66 +26,64 @@
             每天学习的新单词量
             <el-select v-model="value">
                 <el-option
-                        v-for="item in options"
                         :key="item.value"
                         :label="item.label"
-                        :value="item.value">
+                        :value="item.value"
+                        v-for="item in options">
                 </el-option>
             </el-select>
-            <el-button class="check" type="success" icon="el-icon-check" circle @click="setNum(value)"></el-button>
+            <el-button @click="setNum(value)" circle class="check" icon="el-icon-check" type="success"></el-button>
 
             <el-switch
-                    v-model="switcher"
-                    active-text="显示翻译"
-                    inactive-text="隐藏翻译">
+                    active-="显示翻译"
+                    inactive-="隐藏翻译"
+                    v-model="switcher">
             </el-switch>
 
             <span class="learningInfo">总学习情况：{{oldWord}}/{{totalWord}}</span>
-
         </div>
 
-<!--        编辑框-->
-        <el-dialog title="编辑" :visible.sync="dialogFormVisible">
+        <!--        编辑框-->
+        <el-dialog :visible.sync="dialogFormVisible" title="编辑">
             <el-form :model="form">
-                <el-form-item label="单词" :label-width="formLabelWidth" v-show="false">
+                <el-form-item :label-width="formLabelWidth" label="单词" v-show="false">
                     <el-input v-model="form.id"></el-input>
                 </el-form-item>
-                <el-form-item label="单词" :label-width="formLabelWidth">
-                    <el-input v-model="form.word" disabled></el-input>
+                <el-form-item :label-width="formLabelWidth" label="单词">
+                    <el-input disabled v-model="form.word"></el-input>
                 </el-form-item>
-                <el-form-item label="状态" :label-width="formLabelWidth">
-                    <el-select v-model="form.state" placeholder="请选择状态">
+                <el-form-item :label-width="formLabelWidth" label="状态">
+                    <el-select placeholder="请选择状态" v-model="form.state">
                         <el-option label="未背诵" value="0"></el-option>
                         <el-option label="已背诵" value="1"></el-option>
                         <el-option label="已掌握" value="2"></el-option>
                     </el-select>
                 </el-form-item>
-                <el-form-item label="中文翻译" :label-width="formLabelWidth">
-                    <el-input v-model="form.chinese" disabled></el-input>
+                <el-form-item :label-width="formLabelWidth" label="中文翻译">
+                    <el-input disabled v-model="form.chinese"></el-input>
                 </el-form-item>
-                <el-form-item label="英英简短释义" :label-width="formLabelWidth">
-                    <el-input v-model="form.enShort" disabled type="textarea" autosize></el-input>
+                <el-form-item :label-width="formLabelWidth" label="英英简短释义">
+                    <el-input autosize disabled type="textarea" v-model="form.enShort"></el-input>
                 </el-form-item>
-                <el-form-item label="英英详细释义" :label-width="formLabelWidth">
-                    <el-input v-model="form.enLong" disabled type="textarea" autosize></el-input>
+                <el-form-item :label-width="formLabelWidth" label="英英详细释义">
+                    <el-input autosize disabled type="textarea" v-model="form.enLong"></el-input>
                 </el-form-item>
-                <el-form-item label="例句" :label-width="formLabelWidth">
-                    <el-input v-model="form.example" disabled type="textarea" autosize></el-input>
+                <el-form-item :label-width="formLabelWidth" label="例句">
+                    <el-input autosize disabled type="textarea" v-model="form.example"></el-input>
                 </el-form-item>
-                <el-form-item label="笔记" :label-width="formLabelWidth">
-                    <el-input v-model="form.note" type="textarea" autosize></el-input>
+                <el-form-item :label-width="formLabelWidth" label="笔记">
+                    <el-input autosize type="textarea" v-model="form.note"></el-input>
                 </el-form-item>
             </el-form>
-            <div slot="footer" class="dialog-footer">
+            <div class="dialog-footer" slot="footer">
                 <el-button @click="dialogFormVisible = false">取 消</el-button>
-                <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+                <el-button @click="dialogFormVisible = false" type="primary">确 定</el-button>
             </div>
         </el-dialog>
-<!--        表格-->
+        <!--        表格-->
         <el-table
                 :data="bookInfos"
                 border
-                class=""
                 stripe>
             <el-table-column
                     align="center"
@@ -97,14 +95,14 @@
                     label="单词"
                     prop="english">
             </el-table-column>
-            <el-table-column v-if="switcher"
-                    label="翻译"
-                    prop="chinese"
-                    width="200">
+            <el-table-column label="翻译"
+                             prop="chinese"
+                             v-if="switcher"
+                             width="200">
             </el-table-column>
-            <el-table-column v-if="!switcher"
-                    label="翻译"
-                    width="200">
+            <el-table-column label="翻译"
+                             v-if="!switcher"
+                             width="200">
                 ******
             </el-table-column>
 
@@ -136,11 +134,12 @@
                     align="center"
                     label="认识次数"
                     prop="knowCount">
-            </el-table-column><el-table-column
-                align="center"
-                label="不认识次数"
-                prop="unknownCount">
-        </el-table-column>
+            </el-table-column>
+            <el-table-column
+                    align="center"
+                    label="不认识次数"
+                    prop="unknownCount">
+            </el-table-column>
             <el-table-column
                     align="center"
                     label="笔记"
@@ -149,8 +148,8 @@
             <el-table-column
                     align="center"
                     label="收藏"
-                    width="50"
-                    prop="collection">
+                    prop="collection"
+                    width="50">
                 <template slot-scope="scope">
                     <div @click="star(scope.row)">
                         <img :src="starOn" alt="" v-if="scope.row.collection==1" width="20">
@@ -163,8 +162,8 @@
                     label="操作"
                     width="150">
                 <template scope="scope">
-                    <el-button size="small" @click="edit(scope.row)">编辑</el-button>
-                    <el-button size="small" type="danger" @click="del(scope.row.id)">删除</el-button>
+                    <el-button @click="edit(scope.row)" size="small">编辑</el-button>
+                    <el-button @click="del(scope.row.id)" size="small" type="danger">删除</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -289,7 +288,7 @@
                     _this.total = res.data.data.totalPage;
                 });
             },
-            getNote(){
+            getNote() {
 
             },
             handleSizeChange(val) {
@@ -344,7 +343,7 @@
                 var bookId = this.$route.query.bookId;
                 this.$axios.post("/downloadRecord?bookId=" + bookId).then(res => {
                     const blob = new Blob(res.data, {type: 'text/plain;charset=utf-8'});
-                    alert(res.data)
+                    alert(res.data);
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement('a');
                     a.href = url;
@@ -357,14 +356,14 @@
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.$axios.get('/setNum?bookId=' + bookId + '&num=' + val).then(res => {
-                    if (res.data.data=='success'){
+                    if (res.data.data == 'success') {
                         _this.$message.success('修改成功')
-                    }else {
+                    } else {
                         _this.$message.error('修改失败')
                     }
                 });
             },
-            edit(row){
+            edit(row) {
                 this.dialogFormVisible = true;
                 this.form.word = row.english;
                 this.form.chinese = row.chinese;
@@ -373,16 +372,16 @@
                 this.form.example = row.example;
                 this.form.note = row.note;
                 var curState = row.state;
-                if (curState==0){
+                if (curState == 0) {
                     curState = '未背诵'
-                }else if (curState == 1){
+                } else if (curState == 1) {
                     curState = '已背诵'
-                }else {
+                } else {
                     curState = '已掌握'
                 }
                 this.form.state = curState;
             },
-            del(val){
+            del(val) {
                 const _this = this;
                 var bookId = this.$route.query.bookId;
                 this.$confirm('此操作将永久删除此条背诵记录, 是否继续?', '提示', {
@@ -391,9 +390,9 @@
                     type: 'warning'
                 }).then(() => {
                     _this.$axios.get('/delById?recordId=' + val).then(res => {
-                        if (res.data.code==200){
+                        if (res.data.code == 200) {
                             _this.$message.success('删除成功')
-                        }else {
+                        } else {
                             _this.$message.error('删除失败')
                         }
                     });
@@ -410,7 +409,7 @@
 
 <style scoped>
     .manage {
-        overflow:auto;
+        overflow: auto;
         width: 80%;
         margin: 0 auto;
     }
@@ -423,19 +422,23 @@
     .pagination {
         padding-top: 20px;
         text-align: center;
+        margin-bottom: 60px;
     }
 
     .option {
         margin-bottom: 20px;
     }
-    .el-select{
+
+    .el-select {
         width: 100px;
     }
-    .check{
+
+    .check {
         margin-left: 20px;
         margin-right: 20px;
     }
-    .learningInfo{
+
+    .learningInfo {
         margin-left: 60px;
     }
 </style>
