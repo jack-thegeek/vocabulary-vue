@@ -7,7 +7,6 @@
                     <el-radio label="zh">英译中</el-radio>
                 </el-radio-group>
 
-                <p></p>
                 <el-form :model="searchForm" :rules="rules" ref="searchForm">
                     <el-form-item label="" prop="text">
                         <el-input
@@ -133,6 +132,10 @@
 
     .el-col {
         border-radius: 4px;
+    }
+
+    .el-radio-group {
+        margin-bottom: 20px;
     }
 
 

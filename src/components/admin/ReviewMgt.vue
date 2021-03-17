@@ -74,9 +74,11 @@
                         label="操作"
                         width="250">
                     <template scope="scope">
-                        <el-button @click="" size="small" type="success" @click="acceptUpload(scope.row.id)">通过
+                        <el-button @click="" size="small" type="success" @click="acceptUpload(scope.row.id)"
+                                   v-show="scope.row.state==0">通过
                         </el-button>
-                        <el-button @click="" size="small" type="danger" @click="denyUpload(scope.row.id)">不通过
+                        <el-button @click="" size="small" type="danger" @click="denyUpload(scope.row.id)"
+                                   v-show="scope.row.state==0">不通过
                         </el-button>
                         <el-button @click="downloadExcel(scope.row.pathName)" size="small" type="primary">下载</el-button>
                     </template>
