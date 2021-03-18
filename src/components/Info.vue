@@ -113,7 +113,7 @@
             // 拍照
             photograph() {
                 const _this = this;
-                let ctx = this.$refs['canvas'].getCon('2d');
+                let ctx = this.$refs['canvas'].getContext('2d');
                 ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
                 let imgBase64 = this.$refs['canvas'].toDataURL('image/jpeg', 0.7);
                 const formData = new FormData();
