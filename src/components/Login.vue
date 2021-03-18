@@ -133,7 +133,7 @@
             // 拍照
             photograph() {
                 const _this = this;
-                let ctx = this.$refs['canvas'].getCon('2d');
+                let ctx = this.$refs['canvas'].getContext('2d');
                 // 把当前视频帧内容渲染到canvas上
                 ctx.drawImage(this.$refs['video'], 0, 0, 150, 150);
                 // 转base64格式、图片格式转换、图片质量压缩---支持两种格式image/jpeg+image/png
@@ -154,6 +154,8 @@
                         if (counter < 3) {
                             _this.tip = '检测失败，正在进行第' + (++counter) + '次重试';
                             setTimeout(_this.photograph, 3000);
+                        } else {
+                            _this.tip = '多次检测失败，请稍后重试';
                         }
                     }
                 }).finally(
