@@ -55,9 +55,9 @@
         data() {
             return {
                 form: {
-                    name: 'abilgail',
-                    email: 'hezijie_jack@163.com',
-                    password: 'abigial',
+                    name: 'jack',
+                    email: '869424311@qq.com',
+                    password: 'jackjack',
                 },
                 rules: {
                     name: [
@@ -68,7 +68,7 @@
                         {required: true, message: '请输入邮箱', trigger: 'blur'}
                     ],
                     password: [
-                        {required: true, message: '请输入密码', trigger: 'blur'}
+                        {min: 6, max: 20, required: true, message: '请输入密码，长度在6到20个字母', trigger: 'blur'}
                     ],
                     code: [
                         {required: true, message: '请输入验证码', trigger: 'blur'}

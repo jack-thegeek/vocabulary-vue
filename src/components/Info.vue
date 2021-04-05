@@ -131,9 +131,9 @@
                             setTimeout(this.photograph, 3000);
                         } else {
                             _this.tip = '连续多次检测失败，请稍后重试！';
+                            // _this.handleClose();
                         }
                     }
-
                 }).finally(
                     // _this.closeCamera()
                 );

@@ -107,6 +107,9 @@
             initData() {
                 const _this = this;
                 this.$axios.get('/admin/listUser').then(res => {
+                    if (res.data.code == 403){
+                        _this.$router.push('/home/info')
+                    }
                     _this.userList = res.data.data.userList;
                     _this.total = res.data.data.total;
                 });
