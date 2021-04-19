@@ -166,8 +166,13 @@ export default {
         },
         updateNote(recordId) {
             const _this = this
-            this.$axios.post('/updateNote?recordId=' + recordId + '&note=' + _this.noteText).then(res => {
-                _this.$message.success('提交成功')
+            let noteData = {'id': recordId, 'note': this.noteText}
+            this.$axios.post('/updateNote',noteData).then(res => {
+                if (res.data.code == 200) {
+                    _this.$message.success('提交成功')
+                } else {
+                    _this.$message.error('提交失败')
+                }
             })
         }
     }

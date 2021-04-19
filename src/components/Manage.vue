@@ -8,7 +8,7 @@
 					<el-button @click="getNotRecited" type="danger">未学习</el-button>
 					<el-button @click="getMaster" type="success">已掌握</el-button>
 					<el-button @click="getStar" type="warning">星标单词</el-button>
-<!--					<el-button @click="getNote" type="info">我的笔记</el-button>-->
+					<!--					<el-button @click="getNote" type="info">我的笔记</el-button>-->
 					<el-button @click="download" type="button">导出全部</el-button>
 				</el-col>
 				<el-col :lg="9" :md="9" :sm="24" :xl="9" :xs="24">
@@ -35,8 +35,8 @@
 			<el-button @click="setNum(value)" circle class="check" icon="el-icon-check" type="success"></el-button>
 
 			<el-switch
-					active-="显示翻译"
-					inactive-="隐藏翻译"
+					active-text="显示翻译"
+					inactive-text="隐藏翻译"
 					v-model="switcher">
 			</el-switch>
 
@@ -46,18 +46,11 @@
 		<!--        编辑框-->
 		<el-dialog :visible.sync="dialogFormVisible" title="编辑">
 			<el-form :model="form">
-				<el-form-item :label-width="formLabelWidth" label="单词" v-show="false">
+				<el-form-item :label-width="formLabelWidth" label="id">
 					<el-input v-model="form.id"></el-input>
 				</el-form-item>
 				<el-form-item :label-width="formLabelWidth" label="单词">
 					<el-input disabled v-model="form.word"></el-input>
-				</el-form-item>
-				<el-form-item :label-width="formLabelWidth" label="状态">
-					<el-select placeholder="请选择状态" v-model="form.state">
-						<el-option label="未背诵" value="0"></el-option>
-						<el-option label="已背诵" value="1"></el-option>
-						<el-option label="已掌握" value="2"></el-option>
-					</el-select>
 				</el-form-item>
 				<el-form-item :label-width="formLabelWidth" label="中文翻译">
 					<el-input disabled v-model="form.chinese"></el-input>
@@ -77,7 +70,7 @@
 			</el-form>
 			<div class="dialog-footer" slot="footer">
 				<el-button @click="dialogFormVisible = false">取 消</el-button>
-				<el-button @click="dialogFormVisible = false" type="primary">确 定</el-button>
+				<el-button @click="updateNote(form.id)" type="primary">确 定</el-button>
 			</div>
 		</el-dialog>
 		<!--        表格-->
@@ -97,11 +90,11 @@
 			</el-table-column>
 			<el-table-column label="翻译"
 			                 prop="chinese"
-			                 v-if="switcher"
+			                 v-if=switcher
 			                 width="200">
 			</el-table-column>
 			<el-table-column label="翻译"
-			                 v-if="!switcher"
+			                 v-if=!switcher
 			                 width="200">
 				******
 			</el-table-column>
@@ -211,7 +204,6 @@ export default {
                 example: '',
                 note: '',
                 state: ''
-
             },
             formLabelWidth: '120px',
             options: [{value: '5', label: '5'}, {value: '10', label: '10'}, {
@@ -366,20 +358,24 @@ export default {
         edit(row) {
             this.dialogFormVisible = true
             this.form.word = row.english
+            this.form.id = row.id
             this.form.chinese = row.chinese
             this.form.enLong = row.enLong
             this.form.enShort = row.enShort
             this.form.example = row.example
             this.form.note = row.note
-            var curState = row.state
-            if (curState == 0) {
-                curState = '未背诵'
-            } else if (curState == 1) {
-                curState = '已背诵'
-            } else {
-                curState = '已掌握'
-            }
-            this.form.state = curState
+        },
+        updateNote(recordId) {
+            const _this = this
+            let data = {'id': recordId, 'note': this.form.note}
+            this.$axios.post('/updateNote',data).then(res => {
+                _this.dialogFormVisible = false
+                if (res.data.code == 200) {
+                    _this.$message.success('成功')
+                } else {
+                    _this.$message.error('失败')
+                }
+            })
         },
         del(val) {
             const _this = this
