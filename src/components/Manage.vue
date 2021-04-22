@@ -333,16 +333,9 @@ export default {
         },
         download() {
             var bookId = this.$route.query.bookId
-            this.$axios.post('/downloadRecord?bookId=' + bookId).then(res => {
-                const blob = new Blob(res.data, {type: 'text/plain;charset=utf-8'})
-                alert(res.data)
-                const url = window.URL.createObjectURL(blob)
-                const a = document.createElement('a')
-                a.href = url
-                a.download = 'vocabulary.xlsx'
-                a.click()
-                window.URL.revokeObjectURL(url)
-            })
+	        var uid = this.$store.getters.getUser.id
+            console.log(uid)
+            window.open('http://localhost:8081/downloadRecord?bookId='+bookId+'&uid='+uid, '_blank')
         },
         setNum(val) {
             const _this = this
